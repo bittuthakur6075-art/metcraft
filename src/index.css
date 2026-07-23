@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Typography */
+  --font-family-primary: 'Inter', sans-serif;
+  --font-size-xs: 10px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 22px;
+  --font-size-3xl: 26px;
+  --font-size-4xl: 32px;
+  
+  --font-weight-base: 400;
+  --font-line-height-base: 24px;
+
+  /* Colors */
+  --color-text-primary: #0d141a;
+  --color-text-secondary: #1d1e20;
+  --color-text-tertiary: #ffffff;
+  --color-text-inverse: #1a1a1c;
+  --color-surface-base: #000000;
+  --color-surface-raised: #6c7a89;
+  --color-surface-subtle: #F5F6F7;
+
+  /* Spacing */
+  --space-1: 1px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 14px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 32px;
+
+  /* Radius */
+  --radius-xs: 10px;
+  --radius-sm: 28px;
+  --radius-md: 50px;
+  --radius-lg: 100px;
+  --radius-xl: 999px;
+
+  /* Shadows */
+  --shadow-1: 0px 0px 0px 0px rgba(0,0,0,0);
+  --shadow-2: 0px 4px 12px 0px rgba(0,0,0,0.15);
+
+  /* Motion */
+  --motion-duration-instant: 150ms;
+  --motion-duration-fast: 200ms;
+  --motion-duration-normal: 300ms;
+
+  /* Custom functional colors */
+  --color-border-subtle: #e2e8f0;
+  --color-error: #dc2626;
+  --color-success: #16a34a;
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-base);
+  line-height: var(--font-line-height-base);
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-primary);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography styles */
+h1 {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+p {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: text-decoration var(--motion-duration-fast) ease-out;
+}
+
+a:hover, a:focus {
+  text-decoration: underline;
+}
+
+/* Global Focus visible outline - WCAG 2.2 AA */
+:focus-visible {
+  outline: 2px solid var(--color-text-primary) !important;
+  outline-offset: var(--space-2) !important;
+}
+
+/* Keyboard access indicators */
+.focus-ring-dark:focus-visible {
+  outline: 2px solid var(--color-text-tertiary) !important;
+  outline-offset: var(--space-2) !important;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Accessibility reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Root structure override */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
