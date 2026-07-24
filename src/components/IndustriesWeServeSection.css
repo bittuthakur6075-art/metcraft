@@ -1,0 +1,307 @@
+/* IndustriesWeServeSection.css - Pre-Footer "Industries We Serve" & CTA Strip */
+
+.iws-section-wrapper {
+  width: 100%;
+  background: radial-gradient(ellipse at top, rgba(207, 250, 254, 0.35) 0%, rgba(255, 255, 255, 1) 75%);
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dark .iws-section-wrapper {
+  background: radial-gradient(ellipse at top, rgba(14, 116, 144, 0.15) 0%, rgba(15, 23, 42, 1) 75%);
+  border-color: #1e293b;
+}
+
+.iws-section-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 72px 24px 48px 24px;
+  font-family: var(--font-family-primary, 'Inter', system-ui, sans-serif);
+}
+
+/* Header */
+.iws-header-block {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.iws-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 18px;
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+  color: #0891b2;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.dark .iws-badge {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #22d3ee;
+}
+
+.iws-main-title {
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+.dark .iws-main-title {
+  color: #f8fafc;
+}
+
+.iws-serif-italic {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #06b6d4;
+}
+
+.dark .iws-serif-italic {
+  color: #22d3ee;
+}
+
+.iws-sub-title {
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  color: #64748b;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.dark .iws-sub-title {
+  color: #94a3b8;
+}
+
+/* Horizontal Scroll Track */
+.iws-track-wrapper {
+  margin-bottom: 56px;
+  overflow: hidden;
+  position: relative;
+}
+
+.iws-cards-track {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 12px 4px 20px 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.iws-cards-track::-webkit-scrollbar {
+  display: none;
+}
+
+.iws-card-item {
+  min-width: 220px;
+  max-width: 245px;
+  flex: 0 0 auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 10px 20px 10px 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.25s ease;
+}
+
+.dark .iws-card-item {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.iws-card-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(6, 182, 212, 0.15);
+  border-color: #22d3ee;
+}
+
+.dark .iws-card-item:hover {
+  border-color: #0891b2;
+}
+
+.iws-card-icon-badge {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: #ecfeff;
+  border: 1px solid #cffafe;
+  color: #0891b2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.dark .iws-card-icon-badge {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #22d3ee;
+}
+
+.iws-card-item:hover .iws-card-icon-badge {
+  transform: scale(1.1);
+}
+
+.iws-card-text-group h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 1px 0;
+  white-space: nowrap;
+}
+
+.dark .iws-card-text-group h4 {
+  color: #f8fafc;
+}
+
+.iws-card-text-group p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dark .iws-card-text-group p {
+  color: #94a3b8;
+}
+
+/* PRE-FOOTER CALL TO ACTION BANNER (Featuring Get Quote & WhatsApp buttons) */
+.pre-footer-cta-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 28px;
+  padding: 48px 40px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pre-footer-cta-content {
+  max-width: 620px;
+}
+
+.pre-footer-cta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #22d3ee;
+  margin-bottom: 12px;
+}
+
+.pre-footer-cta-title {
+  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.pre-footer-cta-desc {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.pre-footer-cta-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cta-btn-quote {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4);
+  transition: all 0.25s ease;
+}
+
+.cta-btn-quote:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(8, 145, 178, 0.5);
+  background: linear-gradient(135deg, #0e7490 0%, #0c4a6e 100%);
+}
+
+.cta-btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: #25d366;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.cta-btn-whatsapp:hover {
+  transform: translateY(-2px);
+  background: #20ba5a;
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.45);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .pre-footer-cta-banner {
+    padding: 32px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pre-footer-cta-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+  .cta-btn-quote, .cta-btn-whatsapp {
+    width: 100%;
+  }
+}

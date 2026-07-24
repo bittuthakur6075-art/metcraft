@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, MessageCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { WhatsAppIcon } from './components/WhatsAppIcon';
 
 interface FAQItemProps {
   question: string;
@@ -160,7 +161,7 @@ export function FaqPage({ navigateTo }: FaqPageProps) {
       },
       {
         question: 'What GST rate applies?',
-        answer: 'Metcraft promotional metal gifts and executive products are subject to 18% GST under the Indian HSN code classifications.'
+        answer: 'Ortex Industries promotional metal gifts and executive products are subject to 18% GST under the Indian HSN code classifications.'
       },
       {
         question: 'Can I cancel or change an order after confirming?',
@@ -284,7 +285,7 @@ export function FaqPage({ navigateTo }: FaqPageProps) {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#20ba5a'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#25d366'}
           >
-            <MessageCircle size={18} />
+            <WhatsAppIcon size={18} />
             <span>Chat on WhatsApp</span>
           </a>
         </div>

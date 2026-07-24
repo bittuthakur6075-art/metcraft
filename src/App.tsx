@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import {
   Search,
   X,
@@ -16,13 +16,32 @@ import {
   Mail,
   MapPin,
   Briefcase,
-  MessageCircle,
   ShieldCheck,
-  Award
+  Award,
+  Layers,
+  ShoppingBag,
+  Rocket,
+  Hotel,
+  Cpu,
+  Building,
+  Gift,
+  GraduationCap,
+  Shield,
+  Car,
+  Laptop
 } from 'lucide-react';
 import './App.css';
-import { AboutPage } from './AboutPage';
-import { FaqPage } from './FaqPage';
+import { TestimonialsSection, INITIAL_REVIEWS, type ReviewItem } from './components/TestimonialsSection';
+import { IndustrySolutionsSection } from './components/IndustrySolutionsSection';
+import { QualityProcessSection } from './components/QualityProcessSection';
+import { WhyChooseUsSection } from './components/WhyChooseUsSection';
+import { IndustriesWeServeSection } from './components/IndustriesWeServeSection';
+import { B2BAdvantageSection, WhyChooseOrtexSection } from './components/B2BAdvantageSection';
+import { WhatsAppIcon } from './components/WhatsAppIcon';
+
+const AboutPage = lazy(() => import('./AboutPage').then(m => ({ default: m.AboutPage })));
+const FaqPage = lazy(() => import('./FaqPage').then(m => ({ default: m.FaqPage })));
+
 
 // Interfaces
 interface Product {
@@ -4968,7 +4987,7 @@ const PRODUCTS: Product[] = [
 const REAL_CLIENT_REVIEWS = [
   {
     initial: 'S',
-    color: '#2563eb',
+    color: '#0891b2',
     name: 'S LAL',
     location: 'Greater Noida, Uttar Pradesh',
     date: '22-Jan-23',
@@ -5085,7 +5104,7 @@ const REAL_CLIENT_REVIEWS = [
   },
   {
     initial: 'A',
-    color: '#2563eb',
+    color: '#0891b2',
     name: 'Ajay Kumar Gupta',
     location: 'New Delhi, Delhi',
     date: '30-Dec-24',
@@ -5138,6 +5157,14 @@ function getProductCategory(product: Product): { id: string; name: string; badge
 function App() {
   // Page Navigation State: 'home' | 'catalog' | 'quote' | 'contact'
   const [activePage, setActivePage] = useState<string>('home');
+  
+  // Shared Reviews List State
+  const [reviewsList, setReviewsList] = useState<ReviewItem[]>(INITIAL_REVIEWS);
+
+  const handleAddNewReview = (newReview: ReviewItem) => {
+    setReviewsList((prev) => [newReview, ...prev]);
+    announce(`Thank you ${newReview.name}! Your review has been published.`);
+  };
   
   // RFQ Quote List State (Replaces B2C Shopping Cart)
   const [quoteList, setQuoteList] = useState<QuoteItem[]>([]);
@@ -5225,6 +5252,7 @@ function App() {
   const [contactErrors, setContactErrors] = useState<Record<string, string>>({});
   const [contactSuccess, setContactSuccess] = useState<boolean>(false);
   const [contactLoading, setContactLoading] = useState<boolean>(false);
+  const [lastWaUrl, setLastWaUrl] = useState<string>('');
 
   // RFQ Submission states
   const [rfqName, setRfqName] = useState<string>('');
@@ -5238,6 +5266,7 @@ function App() {
   const [rfqErrors, setRfqErrors] = useState<Record<string, string>>({});
   const [rfqSuccess, setRfqSuccess] = useState<boolean>(false);
   const [rfqSubmitLoading, setRfqSubmitLoading] = useState<boolean>(false);
+
 
   // Scrolled state for header styles
   const [scrolled, setScrolled] = useState<boolean>(false);
@@ -5274,6 +5303,18 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedProduct, mobileNavOpen, confirmDeleteDialog]);
+
+  // Lock body scroll when mobile menu or modal is open
+  useEffect(() => {
+    if (mobileNavOpen || selectedProduct !== null || confirmDeleteDialog.isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileNavOpen, selectedProduct, confirmDeleteDialog.isOpen]);
 
   // Screen reader announcer helper
   const announce = (message: string) => {
@@ -5403,7 +5444,7 @@ function App() {
 
 
 
-  // Contact Us B2B Form submit
+  // Contact Us B2B Form submit -> Direct WhatsApp Dispatch
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const errors: Record<string, string> = {};
@@ -5415,37 +5456,44 @@ function App() {
     if (!contactPhone.trim()) errors.phone = 'Please enter a contact phone number.';
     if (!contactMessage.trim()) errors.message = 'Please write details of your requirement.';
 
-    const emailStatus = validateCorporateEmail(contactEmail);
-    if (!emailStatus.isValid) {
-      errors.email = 'Enter a valid email address.';
-    } else if (!emailStatus.isCorporate) {
-      errors.emailWarning = 'We recommend using your corporate email domain for priority business review.';
+    if (contactEmail.trim()) {
+      const emailStatus = validateCorporateEmail(contactEmail);
+      if (!emailStatus.isValid) {
+        errors.email = 'Enter a valid email address.';
+      }
     }
 
-    if (Object.keys(errors).length > 0 && !errors.emailWarning) {
+    if (Object.keys(errors).length > 0) {
       setContactErrors(errors);
       announce('Contact form validation failed.');
       return;
     }
 
-    setContactErrors(errors);
-
+    setContactErrors({});
     setContactLoading(true);
-    announce('Sending your B2B inquiry to Ortex corporate desk...');
+    announce('Formatting your inquiry for WhatsApp dispatch...');
+
+    const formattedMessage = `Hello Ortex Industries,%0A%0AI would like to submit a B2B corporate inquiry:%0A%0A👤 *Name:* ${encodeURIComponent(contactName.trim())}%0A🏢 *Company:* ${encodeURIComponent(contactCompany.trim())}%0A📧 *Email:* ${encodeURIComponent(contactEmail.trim() || 'N/A')}%0A📞 *Phone:* ${encodeURIComponent(contactPhone.trim())}%0A%0A📝 *Requirement / Message:*%0A${encodeURIComponent(contactMessage.trim())}`;
+    const waUrl = `https://wa.me/919211947188?text=${formattedMessage}`;
+    setLastWaUrl(waUrl);
+
     setTimeout(() => {
       setContactLoading(false);
       setContactSuccess(true);
+
+      // Open WhatsApp directly in new tab
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+
       setContactName('');
       setContactEmail('');
       setContactPhone('');
       setContactCompany('');
       setContactMessage('');
-      setContactErrors({});
-      announce('Contact inquiry sent successfully! Our executive will call you within 2 hours.');
-    }, 1200);
+      announce('Inquiry formatted and dispatched directly to WhatsApp!');
+    }, 400);
   };
 
-  // B2B RFQ Submit
+  // B2B RFQ Submit -> Direct WhatsApp Dispatch
   const handleRfqSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const errors: Record<string, string> = {};
@@ -5457,11 +5505,11 @@ function App() {
     if (!rfqDesignation.trim()) errors.designation = 'Please enter your corporate title.';
     if (!rfqPhone.trim()) errors.phone = 'Please enter your corporate phone number.';
     
-    const emailStatus = validateCorporateEmail(rfqEmail);
-    if (!emailStatus.isValid) {
-      errors.email = 'Enter a valid corporate email address.';
-    } else if (!emailStatus.isCorporate) {
-      errors.emailWarning = 'Please use your corporate work email (e.g. name@company.com) for RFQs.';
+    if (rfqEmail.trim()) {
+      const emailStatus = validateCorporateEmail(rfqEmail);
+      if (!emailStatus.isValid) {
+        errors.email = 'Enter a valid corporate email address.';
+      }
     }
 
     if (rfqGstEnabled) {
@@ -5476,22 +5524,39 @@ function App() {
       }
     }
 
-    if (Object.keys(errors).length > 0 && !errors.emailWarning) {
+    if (Object.keys(errors).length > 0) {
       setRfqErrors(errors);
       announce('RFQ submission validation failed.');
       return;
     }
 
-    setRfqErrors(errors);
+    setRfqErrors({});
     setRfqSubmitLoading(true);
-    announce('Submitting wholesale Request For Quote...');
+    announce('Formatting wholesale RFQ for WhatsApp dispatch...');
     
+    // Format RFQ items list
+    const itemsList = quoteList.map((item, idx) => {
+      let discountRate = 1;
+      if (item.quantity >= 250) discountRate = 0.85;
+      else if (item.quantity >= 100) discountRate = 0.90;
+      const subtotal = Math.round(item.product.price * discountRate * item.quantity);
+      return `${idx + 1}. *${item.product.name}* (Qty: ${item.quantity}) - ₹${subtotal.toLocaleString('en-IN')}`;
+    }).join('%0A');
+
+    const formattedMessage = `Hello Ortex Industries,%0A%0AI would like to submit a Wholesale Request For Quote (RFQ):%0A%0A📋 *RFQ Items List:*%0A${encodeURIComponent(itemsList)}%0A%0A💰 *Indicative Estimate:*%0ASubtotal: ₹${calculatedSubtotal.toLocaleString('en-IN')}%0AGST (18%): ₹${estimatedGst.toLocaleString('en-IN')}%0ATotal (incl. GST): ₹${totalRfqEstimate.toLocaleString('en-IN')}%0A%0A👤 *Client Details:*%0AName: ${encodeURIComponent(rfqName.trim())} (${encodeURIComponent(rfqDesignation.trim())})%0ACompany: ${encodeURIComponent(rfqCompany.trim())}%0APhone: ${encodeURIComponent(rfqPhone.trim())}%0AEmail: ${encodeURIComponent(rfqEmail.trim() || 'N/A')}${rfqGstEnabled && rfqGst ? `%0AGSTIN: ${encodeURIComponent(rfqGst.trim().toUpperCase())}` : ''}${rfqInstructions.trim() ? `%0A%0A📝 *Instructions:*%0A${encodeURIComponent(rfqInstructions.trim())}` : ''}`;
+    const waUrl = `https://wa.me/919211947188?text=${formattedMessage}`;
+    setLastWaUrl(waUrl);
+
     setTimeout(() => {
       setRfqSubmitLoading(false);
       setRfqSuccess(true);
+
+      // Open WhatsApp directly in new tab
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+
       setQuoteList([]);
-      announce('RFQ Request submitted successfully! Reference ID RFQ-2026-94820.');
-    }, 1500);
+      announce('Wholesale RFQ formatted and dispatched directly to WhatsApp!');
+    }, 400);
   };
 
   // Calculations for indicative B2B discount credit
@@ -5564,10 +5629,9 @@ function App() {
           <button 
             onClick={() => navigateTo('home')}
             className="ss-logo" 
-            aria-label="Ortex Industries Metcraft Home"
+            aria-label="Ortex Industries Private Limited Home"
           >
-            <img src="/logo.jpg" alt="Ortex Industries Logo" style={{ height: '32px', borderRadius: '4px', mixBlendMode: 'multiply' as const }} />
-            <span style={{ fontSize: '18px' }}>metcraft.</span>
+            <img src="/logo.png" alt="Ortex Industries Private Limited" style={{ height: '38px', objectFit: 'contain' }} />
           </button>
 
           {/* Desktop Nav Links */}
@@ -5622,7 +5686,7 @@ function App() {
               className="ss-btn-whatsapp"
               aria-label="Chat with us on WhatsApp"
             >
-              <MessageCircle size={16} />
+              <WhatsAppIcon size={16} />
               <span>WhatsApp</span>
             </a>
 
@@ -5730,7 +5794,7 @@ function App() {
                   className="ss-btn-whatsapp"
                   style={{ width: '100%', justifyContent: 'center', borderRadius: '999px' }}
                 >
-                  <MessageCircle size={16} />
+                  <WhatsAppIcon size={16} />
                   <span>Chat on WhatsApp</span>
                 </a>
               </div>
@@ -5747,13 +5811,14 @@ function App() {
           {/* Dark Modern Hero */}
           <section 
             className="nx-home-hero"
-            style={{ backgroundImage: `url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=2000&auto=format&fit=crop')` }}
+            style={{ backgroundImage: `url('/hero_bg_metal.jpg')` }}
           >
             <div className="nx-hero-overlay">
               <div className="nx-hero-container">
-                <span className="nx-hero-subtag">WELCOME TO METCRAFT</span>
+                <span className="nx-hero-subtag">WELCOME TO ORTEX INDUSTRIES</span>
                 <h1 className="nx-hero-heading">
-                  We Build Precision Metal Experiences That <span className="accent-blue">Inspire.</span>
+                  We Build Precision Metal Experiences<br />
+                  That <span className="accent-teal">Inspire</span>
                 </h1>
                 <p className="nx-hero-desc">
                   We are a premier precision metal manufacturing agency helping corporate brands grow with high-quality CNC items, custom engraving & B2B manufacturing strategy.
@@ -5772,7 +5837,7 @@ function App() {
                     className="ss-btn-whatsapp"
                     style={{ padding: '14px 28px', fontSize: '15px', fontWeight: 700 }}
                   >
-                    <MessageCircle size={18} />
+                    <WhatsAppIcon size={18} />
                     <span>WhatsApp Get Quote</span>
                   </a>
                 </div>
@@ -5819,196 +5884,28 @@ function App() {
             </div>
           </section>
 
-          {/* WHAT WE DO - Services Grid */}
-          <section className="nx-section">
-            <div className="nx-section-header">
-              <div>
-                <span className="nx-section-subtag">WHAT WE DO</span>
-                <h2 className="nx-section-title">
-                  Services That Drive Real <span className="accent-blue">Results</span>
-                </h2>
-              </div>
 
-              <button className="nx-btn-outline" onClick={() => navigateTo('catalog')}>
-                <span>View All Services</span>
-                <ArrowRight size={14} />
-              </button>
-            </div>
+          {/* #3 — B2B MANUFACTURING ADVANTAGE (Explain capabilities early) */}
+          <B2BAdvantageSection onStartProject={() => navigateTo('quote')} />
 
-            <div className="nx-services-grid">
-              <div className="nx-service-card" onClick={() => handleCategorySelect('office')} style={{ cursor: 'pointer' }}>
-                <div className="nx-service-card-img-wrapper">
-                  <img 
-                    src="/steel_desk_tray.jpg" 
-                    alt="Precision CNC Milling" 
-                    className="nx-service-card-img" 
-                  />
-                </div>
-                <div className="nx-service-card-content">
-                  <h3 className="nx-service-title">Precision CNC Milling</h3>
-                  <p className="nx-service-desc">High tolerance titanium, brass & stainless steel machining for executive accessories.</p>
-                  
-                  <div className="nx-trust-badge-group">
-                    <span className="nx-trust-pill">ISO 9001:2015</span>
-                    <span className="nx-trust-pill">±0.02mm CNC</span>
-                  </div>
-
-                  <span className="nx-service-link" style={{ marginTop: 'auto' }}>Learn More →</span>
-                </div>
-              </div>
-
-              <div className="nx-service-card" onClick={() => handleCategorySelect('writing')} style={{ cursor: 'pointer' }}>
-                <div className="nx-service-card-img-wrapper">
-                  <img 
-                    src="/brass_hex_pen.jpg" 
-                    alt="Fiber Laser Engraving" 
-                    className="nx-service-card-img" 
-                  />
-                </div>
-                <div className="nx-service-card-content">
-                  <h3 className="nx-service-title">Fiber Laser Engraving</h3>
-                  <p className="nx-service-desc">Micron-level custom corporate logo etching and serial numbering on all metal alloys.</p>
-
-                  <div className="nx-trust-badge-group">
-                    <span className="nx-trust-pill">Sub-Micron Laser</span>
-                    <span className="nx-trust-pill">Permanent Etch</span>
-                  </div>
-
-                  <span className="nx-service-link" style={{ marginTop: 'auto' }}>Learn More →</span>
-                </div>
-              </div>
-
-              <div className="nx-service-card" onClick={() => handleCategorySelect('everyday')} style={{ cursor: 'pointer' }}>
-                <div className="nx-service-card-img-wrapper">
-                  <img 
-                    src="/copper_coasters.jpg" 
-                    alt="Bulk OEM White Label" 
-                    className="nx-service-card-img" 
-                  />
-                </div>
-                <div className="nx-service-card-content">
-                  <h3 className="nx-service-title">Bulk OEM White Label</h3>
-                  <p className="nx-service-desc">Custom branded corporate gifting solutions, custom presentation packaging & volume runs.</p>
-
-                  <div className="nx-trust-badge-group">
-                    <span className="nx-trust-pill">OEM White Label</span>
-                    <span className="nx-trust-pill">MOQ: 50 Units</span>
-                  </div>
-
-                  <span className="nx-service-link" style={{ marginTop: 'auto' }}>Learn More →</span>
-                </div>
-              </div>
-
-              <div className="nx-service-card" onClick={() => navigateTo('contact')} style={{ cursor: 'pointer' }}>
-                <div className="nx-service-card-img-wrapper">
-                  <img 
-                    src="/titanium_card_holder.jpg" 
-                    alt="Bespoke Product Design" 
-                    className="nx-service-card-img" 
-                  />
-                </div>
-                <div className="nx-service-card-content">
-                  <h3 className="nx-service-title">Bespoke Product Design</h3>
-                  <p className="nx-service-desc">Custom 3D CAD mockup modeling, rapid prototype milling & physical sample courier.</p>
-
-                  <div className="nx-trust-badge-group">
-                    <span className="nx-trust-pill">3D CAD Proofing</span>
-                    <span className="nx-trust-pill">Free Prototype</span>
-                  </div>
-
-                  <span className="nx-service-link" style={{ marginTop: 'auto' }}>Learn More →</span>
-                </div>
-              </div>
-            </div>
-
-            {/* B2B Trust & Quality Guarantee Strip */}
-            <div className="nx-guarantee-strip" aria-label="B2B Trust and Quality Assurances">
-              <div className="nx-guarantee-item">
-                <div className="nx-guarantee-icon-box">
-                  <ShieldCheck size={22} />
-                </div>
-                <div>
-                  <h4 className="nx-guarantee-title">Certified Alloys</h4>
-                  <p className="nx-guarantee-desc">Grade 5 Aerospace Titanium, C360 Brass & 304 Stainless Steel certified composition.</p>
-                </div>
-              </div>
-
-              <div className="nx-guarantee-item">
-                <div className="nx-guarantee-icon-box">
-                  <Award size={22} />
-                </div>
-                <div>
-                  <h4 className="nx-guarantee-title">2-Hour Digital Proofs</h4>
-                  <p className="nx-guarantee-desc">Free 3D logo CAD mockups & placement alignment proofs before production.</p>
-                </div>
-              </div>
-
-              <div className="nx-guarantee-item">
-                <div className="nx-guarantee-icon-box">
-                  <Truck size={22} />
-                </div>
-                <div>
-                  <h4 className="nx-guarantee-title">Pan-India GST Logistics</h4>
-                  <p className="nx-guarantee-desc">Insured express cargo shipment with 100% GST input tax credit invoice.</p>
-                </div>
-              </div>
-
-              <div className="nx-guarantee-item">
-                <div className="nx-guarantee-icon-box">
-                  <CheckCircle2 size={22} />
-                </div>
-                <div>
-                  <h4 className="nx-guarantee-title">Zero-Defect Quality</h4>
-                  <p className="nx-guarantee-desc">Every piece undergoes QA inspection with 100% free replacement guarantee.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-
-
-          {/* CURATED 100 PREMIUM PRODUCTS SHOWCASE (SINGLE ROW HORIZONTAL CAROUSEL WITH NAV ARROWS) */}
+          {/* #4 — CURATED 8 PREMIUM PRODUCTS SHOWCASE (2 ROWS OF 4 CARDS) */}
           <section className="nx-section" style={{ background: '#ffffff', maxWidth: '100%', padding: '80px 0', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 32px' }}>
-              <div className="nx-section-header" style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
-                <div>
-                  <span className="nx-section-subtag">PREMIUM CORPORATE CATALOG</span>
-                  <h2 className="nx-section-title">
-                    Selected High-Quality <span className="accent-blue">Corporate Products</span>
-                  </h2>
-                  <p style={{ color: '#64748b', fontSize: '15px', marginTop: '6px', margin: 0 }}>
-                    100 hand-curated precision metal products, executive gifts & EDC accessories arranged in a single catalog row.
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#2563eb', background: '#eff6ff', padding: '8px 16px', borderRadius: '999px', border: '1px solid #dbeafe' }}>
-                    Showcase: 100 Items
-                  </span>
-                  <div className="mc-carousel-arrows">
-                    <button 
-                      className="mc-arrow-btn" 
-                      aria-label="Scroll products left" 
-                      onClick={scrollHomeLeft}
-                      style={{ width: '44px', height: '44px', fontSize: '18px' }}
-                    >
-                      ←
-                    </button>
-                    <button 
-                      className="mc-arrow-btn" 
-                      aria-label="Scroll products right" 
-                      onClick={scrollHomeRight}
-                      style={{ width: '44px', height: '44px', fontSize: '18px' }}
-                    >
-                      →
-                    </button>
-                  </div>
-                </div>
+              <div className="nx-section-header" style={{ marginBottom: '44px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="nx-section-subtag" style={{ display: 'inline-flex', padding: '6px 18px', background: '#ecfeff', border: '1px solid #cffafe', color: '#0891b2', borderRadius: '999px', margin: '0 auto 14px auto', fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em' }}>
+                  PREMIUM CORPORATE CATALOG
+                </span>
+                <h2 className="nx-section-title" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 12px auto' }}>
+                  Selected High-Quality <span className="accent-teal">Corporate Products</span>
+                </h2>
+                <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '680px', margin: '0 auto', textAlign: 'center', lineHeight: '1.6' }}>
+                  Hand-curated precision metal products, executive gifts & EDC accessories.
+                </p>
               </div>
 
-              {/* Single Row Horizontal Scroll Track (100 products) */}
-              <div className="mc-single-row-carousel" ref={homeCarouselRef}>
-                {PRODUCTS.slice(0, 100).map((product, idx) => {
+              {/* 2-Row 4-Column Products Grid (8 products) */}
+              <div className="mc-grid-showcase-2rows">
+                {PRODUCTS.slice(0, 8).map((product, idx) => {
                   const catInfo = getProductCategory(product);
                   const tagBadge = catInfo.badge;
                   const ratingScore = (4.8 + (idx % 3) * 0.1).toFixed(1);
@@ -6016,7 +5913,7 @@ function App() {
                   const formattedPrice = `₹${product.price.toLocaleString('en-IN')}`;
 
                   return (
-                    <div className="mc-card" key={'home-catalog-100-' + product.id + '-' + idx}>
+                    <div className="mc-card" key={'home-catalog-8grid-' + product.id + '-' + idx}>
                       <div className="mc-card-top">
                         <span className="mc-badge-tag">{tagBadge}</span>
                         <img src={product.image} alt={product.name} className="mc-card-img" />
@@ -6056,174 +5953,30 @@ function App() {
                   );
                 })}
               </div>
-            </div>
-          </section>
 
-          {/* WORKFLOW PROCESS SECTION */}
-          <section className="nx-section" style={{ background: '#f8fafc', maxWidth: '100%', padding: '80px 0', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
-            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 32px' }}>
-              <div className="nx-section-header" style={{ textAlign: 'center', margin: '0 auto 48px auto', maxWidth: '720px' }}>
-                <span className="nx-section-subtag">OUR WORKFLOW PROCESS</span>
-                <h2 className="nx-section-title" style={{ fontSize: '32px' }}>
-                  From CAD Concept to <span className="accent-blue">Precision Delivery</span>
-                </h2>
-                <p style={{ color: '#64748b', fontSize: '15px', marginTop: '8px' }}>
-                  A battle-tested 4-step B2B manufacturing pipeline ensuring micron-level quality, OEM branding & seamless PAN India & global delivery.
-                </p>
-              </div>
-
-              <div className="workflow-grid">
-                <div className="workflow-card">
-                  <div className="workflow-step-num">01</div>
-                  <div className="workflow-icon">📋</div>
-                  <h3 className="workflow-title">1. CAD Design & Spec Review</h3>
-                  <p className="workflow-desc">
-                    Submit your 2D/3D CAD blueprints or vector artwork. Our engineering team conducts instant DFM feasibility checks, alloy selection & volume quote calculation.
-                  </p>
-                  <div className="workflow-tag">Step 1 • Spec & Quote</div>
-                </div>
-
-                <div className="workflow-card">
-                  <div className="workflow-step-num">02</div>
-                  <div className="workflow-icon">⚙️</div>
-                  <h3 className="workflow-title">2. Prototyping & Sample Sign-off</h3>
-                  <p className="workflow-desc">
-                    High-speed CNC milling and fiber laser logo etching produce physical pre-production samples. Dispatched via express courier for physical client sign-off.
-                  </p>
-                  <div className="workflow-tag">Step 2 • Prototype Milling</div>
-                </div>
-
-                <div className="workflow-card">
-                  <div className="workflow-step-num">03</div>
-                  <div className="workflow-icon">🏭</div>
-                  <h3 className="workflow-title">3. Mass OEM Production & QA</h3>
-                  <p className="workflow-desc">
-                    High-volume automated machine runs with anodizing, nickel/gold plating, custom laser engraving & 100% CMM dimensional quality inspection.
-                  </p>
-                  <div className="workflow-tag">Step 3 • OEM Batch Run</div>
-                </div>
-
-                <div className="workflow-card">
-                  <div className="workflow-step-num">04</div>
-                  <div className="workflow-icon">📦</div>
-                  <h3 className="workflow-title">4. Branded Packaging & Shipping</h3>
-                  <p className="workflow-desc">
-                    Custom executive presentation packaging, velvet pouch inserts, GST tax compliant documentation & insured PAN India & worldwide door delivery.
-                  </p>
-                  <div className="workflow-tag">Step 4 • Express Dispatch</div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* BUILT FOR YOUR INDUSTRY SECTION (MATCHING REFERENCE IMAGE 0 & 1 WITH SCROLLABLE SECTOR TABS & CARDS) */}
-          <section className="nx-section" style={{ background: '#ffffff', maxWidth: '100%', padding: '80px 0' }}>
-            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 32px' }}>
-              {/* Royal Blue Header Banner (Image 1 Reference) */}
-              <div className="nx-industry-banner-wrapper" style={{ marginBottom: 0 }}>
-                <div className="nx-industry-banner-top">
-                  <div>
-                    <span className="nx-industry-banner-subtag">VERTICAL SOLUTIONS</span>
-                    <h2 className="nx-industry-banner-heading">Built for your industry</h2>
-                  </div>
-                  <p className="nx-industry-banner-desc">
-                    Every sector buys differently. We build to the standards yours works to.
-                  </p>
-                </div>
-
-                {/* Scrollable Sector Badges Row (Image 1 Scroll Track) */}
-                <div className="industry-pill-scroll-track">
-                  {[
-                    { id: 'all', label: 'All Sectors' },
-                    { id: 'retail', label: 'Retail & Brands' },
-                    { id: 'startups', label: 'Startups & SMEs' },
-                    { id: 'hospitality', label: 'Hotels & Hospitality' },
-                    { id: 'oem', label: 'Resellers & OEM' },
-                    { id: 'realestate', label: 'Real Estate' },
-                    { id: 'gifting', label: 'Corporate Gifting' },
-                    { id: 'education', label: 'Schools & Colleges' },
-                    { id: 'gov', label: 'Government & Defense' },
-                    { id: 'automotive', label: 'Automotive & Aviation' },
-                    { id: 'it', label: 'IT & Enterprises' }
-                  ].map((sector) => (
-                    <button
-                      key={sector.id}
-                      className={`industry-sector-pill ${selectedIndustrySector === sector.id ? 'active' : ''}`}
-                      onClick={() => {
-                        setSelectedIndustrySector(sector.id);
-                        announce(`Selected ${sector.label} industry sector`);
-                      }}
-                    >
-                      {sector.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* TESTIMONIALS WITHOUT IMAGES (REAL CLIENT REVIEWS) */}
-          <section className="nx-section" aria-label="Verified Customer Feedback">
-            <div className="nx-section-header">
-              <div>
-                <span className="nx-section-subtag">TESTIMONIALS</span>
-                <h2 className="nx-section-title">
-                  What Our Clients Say About <span className="accent-blue">Us</span>
-                </h2>
-              </div>
-
-              <div className="mc-carousel-arrows">
+              {/* Button Underneath Products Grid */}
+              <div style={{ textAlign: 'center', marginTop: '40px' }}>
                 <button 
-                  className="mc-arrow-btn" 
-                  aria-label="Scroll previous testimonials" 
-                  onClick={scrollTestimonialsLeft}
+                  className="nx-btn-primary"
+                  style={{ padding: '14px 36px', fontSize: '15px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}
+                  onClick={() => navigateTo('catalog')}
                 >
-                  ←
-                </button>
-                <button 
-                  className="mc-arrow-btn" 
-                  aria-label="Scroll next testimonials" 
-                  onClick={scrollTestimonialsRight}
-                >
-                  →
+                  <span>Explore Full Corporate Catalog</span>
+                  <ArrowRight size={16} />
                 </button>
               </div>
             </div>
-
-            {/* Testimonials Without Images Carousel */}
-            <div className="no-img-testimonial-carousel" ref={testimonialScrollRef}>
-              {REAL_CLIENT_REVIEWS.map((review, idx) => (
-                <div className="no-img-testimonial-card" key={review.name + '-' + idx}>
-                  <div>
-                    <div className="no-img-card-top">
-                      <div className="initial-avatar-badge" style={{ backgroundColor: review.color }}>
-                        {review.initial}
-                      </div>
-                      <div className="no-img-client-info">
-                        <h4>{review.name}</h4>
-                        <p>{review.location} • {review.date}</p>
-                        <span className="verified-buyer-badge">
-                          ✓ Verified Buyer
-                        </span>
-                      </div>
-                    </div>
-
-                    <div style={{ marginTop: '16px', marginBottom: '12px' }}>
-                      <span className="testimonial-product-tag">
-                        Product: {review.product}
-                      </span>
-                    </div>
-
-                    <div className="no-img-stars">★★★★★</div>
-                  </div>
-
-                  <p className="no-img-comment">
-                    "{review.comment}"
-                  </p>
-                </div>
-              ))}
-            </div>
           </section>
+
+          {/* #5 — WHY CHOOSE ORTEX INDUSTRIES (Emotional differentiation) */}
+          <WhyChooseOrtexSection />
+
+          {/* #6 — QUALITY IS A PROCESS (Manufacturing rigor for serious buyers) */}
+          <QualityProcessSection />
+
+          {/* #7 — INDUSTRIES WE SERVE & CTA BANNER (Final social proof + conversion) */}
+          <IndustriesWeServeSection onRequestQuote={() => navigateTo('quote')} />
+
         </div>
       )}
 
@@ -6553,28 +6306,26 @@ function App() {
           {/* Call To Action Dark Container */}
           <div className="mc-cta-card">
             <div className="mc-cta-left">
-              <h2 className="mc-cta-title">Ready to Get Our New Stuff?</h2>
-              
-              <form onSubmit={(e) => { e.preventDefault(); announce('Subscribed to corporate updates!'); }} className="mc-cta-input-group">
-                <input
-                  type="email"
-                  className="mc-cta-input"
-                  placeholder="Your Email"
-                  required
-                />
-                <button type="submit" className="mc-cta-send-btn">
-                  Send
-                </button>
-              </form>
+              <h2 className="mc-cta-title" style={{ color: '#ffffff' }}>Ready to Start Your Custom Metal Order?</h2>
+              <p className="mc-cta-subtitle">
+                Connect directly with our sales & engineering team for instant wholesale pricing, CAD branding proofs, and custom volume quotes.
+              </p>
             </div>
 
             <div className="mc-cta-right">
-              <div className="mc-cta-subheading">Metcraft for Homes and Needs</div>
-              <p className="mc-cta-text">
-                We'll listen to your needs, identify the best approach, and then create a bespoke smart EV & corporate metal solution that's right for you.
-              </p>
+              <a 
+                href={whatsappPreFilledLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="ss-btn-whatsapp"
+                style={{ padding: '16px 36px', borderRadius: '999px', fontSize: '15px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '10px' }}
+              >
+                <WhatsAppIcon size={22} />
+                <span>Chat on WhatsApp</span>
+              </a>
             </div>
           </div>
+
         </div>
       )}
 
@@ -6583,7 +6334,7 @@ function App() {
         <section className="quote-page-container" aria-label="Corporate RFQ quote list building">
           <div className="section-header">
             <span className="section-tag" style={{ background: '#f1f5f9', color: '#0f172a', fontWeight: '700', fontSize: '11px', padding: '4px 12px', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Metcraft B2B RFQ Builder
+              Ortex Industries B2B RFQ Builder
             </span>
             <h2 style={{ fontSize: '36px', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.03em', margin: '8px 0 4px 0' }}>
               Your Request For Quote List
@@ -6594,27 +6345,29 @@ function App() {
           </div>
 
           {rfqSuccess ? (
-            <div className="success-screen" aria-live="assertive">
-              <CheckCircle2 className="success-icon" />
-              <h2 style={{ fontSize: '26px', fontWeight: '700', color: 'var(--color-success)' }}>RFQ Submitted Successfully!</h2>
-              <p style={{ maxWidth: '520px', lineHeight: '1.6' }}>
-                Thank you for your bulk inquiry. We have sent a confirmation email copy to <strong>{rfqEmail}</strong>. 
-                Your RFQ reference tracking code is <strong>RFQ-2026-94820</strong>.
+            <div className="success-screen" aria-live="assertive" style={{ textAlign: 'center', padding: '40px 24px' }}>
+              <CheckCircle2 className="success-icon" style={{ color: '#25d366', margin: '0 auto 16px auto' }} />
+              <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>Wholesale RFQ Dispatched to WhatsApp!</h2>
+              <p style={{ maxWidth: '540px', margin: '0 auto 20px auto', lineHeight: '1.6', color: '#64748b' }}>
+                Your complete quote item list and pricing breakdown have been formatted and sent directly to our WhatsApp sales line.
               </p>
-              <div className="checkout-summary-box" style={{ width: '100%', margin: '16px 0', textAlign: 'left' }}>
-                <div className="checkout-summary-title">Corporate Contact Info Registered</div>
-                <p style={{ fontSize: '14px' }}>Account Representative: {rfqName} ({rfqDesignation})</p>
-                <p style={{ fontSize: '14px' }}>Company: {rfqCompany}</p>
-                {rfqGstEnabled && rfqGst && (
-                  <p style={{ fontSize: '14px' }}>Registered GSTIN: {rfqGst.toUpperCase()}</p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '16px' }}>
+                {lastWaUrl && (
+                  <a 
+                    href={lastWaUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="ss-btn-whatsapp"
+                    style={{ padding: '14px 28px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
+                  >
+                    <WhatsAppIcon size={20} />
+                    <span>Open WhatsApp Chat</span>
+                  </a>
                 )}
+                <button onClick={() => navigateTo('home')} className="nx-btn-outline" style={{ padding: '14px 24px' }}>
+                  Return to Home
+                </button>
               </div>
-              <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', fontStyle: 'italic' }}>
-                Our designated production account manager will email your digital mockup designs and wholesale catalog quote sheet within 2 business hours.
-              </p>
-              <button onClick={() => navigateTo('home')} className="btn btn-secondary" style={{ marginTop: '12px' }}>
-                Return to Home Desk
-              </button>
             </div>
           ) : quoteList.length === 0 ? (
             <div className="cart-empty-state" style={{ padding: '64px 0' }}>
@@ -6892,11 +6645,12 @@ function App() {
 
                   <button
                     type="submit"
-                    className="btn btn-secondary"
-                    style={{ width: '100%' }}
+                    className="ss-form-submit"
+                    style={{ background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%', borderRadius: '999px', padding: '16px 24px', color: '#ffffff', fontWeight: 700, fontSize: '15px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 20px rgba(37, 211, 102, 0.35)' }}
                     disabled={rfqSubmitLoading}
                   >
-                    {rfqSubmitLoading ? 'Submitting Corporate RFQ…' : 'Submit Wholesale Request For Quote'}
+                    <WhatsAppIcon size={20} />
+                    <span>{rfqSubmitLoading ? 'Opening WhatsApp…' : 'Submit Wholesale Request For Quote via WhatsApp'}</span>
                   </button>
                 </form>
               </div>
@@ -6958,21 +6712,39 @@ function App() {
             {/* Right column: Form */}
             <div className="ss-contact-form-section">
               {contactSuccess ? (
-                <div className="ss-contact-success">
-                  <CheckCircle2 />
-                  <h3>Corporate Message Received!</h3>
-                  <p>
-                    We have successfully logged your B2B inquiry. Our corporate procurement desk representative will contact you via email or phone within 2 hours.
+                <div className="ss-contact-success" style={{ textAlign: 'center', padding: '32px 16px' }}>
+                  <CheckCircle2 size={48} style={{ color: '#25d366', margin: '0 auto 16px auto' }} />
+                  <h3 style={{ fontSize: '22px', fontWeight: 800, marginBottom: '8px' }}>Inquiry Dispatched to WhatsApp!</h3>
+                  <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '440px', margin: '0 auto 24px auto', lineHeight: '1.6' }}>
+                    Your inquiry details have been formatted and sent directly to our WhatsApp support line. If WhatsApp did not open automatically, click the button below.
                   </p>
-                  <button onClick={() => setContactSuccess(false)} className="ss-form-submit" style={{ width: 'auto', display: 'inline-block' }}>
-                    Send another inquiry
-                  </button>
+                  <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    {lastWaUrl && (
+                      <a 
+                        href={lastWaUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="ss-btn-whatsapp"
+                        style={{ padding: '14px 28px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
+                      >
+                        <WhatsAppIcon size={20} />
+                        <span>Open WhatsApp Chat</span>
+                      </a>
+                    )}
+                    <button 
+                      onClick={() => setContactSuccess(false)} 
+                      className="nx-btn-outline"
+                      style={{ padding: '14px 24px', fontSize: '14px' }}
+                    >
+                      Send Another Inquiry
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <>
                   <h3 className="ss-contact-form-title">Send Message</h3>
                   <p className="ss-contact-form-sub">
-                    Please fill out the form below with your details and message to contact with us
+                    Fill out your details below to send an instant inquiry directly to our WhatsApp support line
                   </p>
 
                   <form onSubmit={handleContactSubmit}>
@@ -7019,7 +6791,7 @@ function App() {
                           type="email"
                           id="contact-form-email"
                           className={`ss-form-input ${contactErrors.email ? 'has-error' : ''}`}
-                          placeholder="Corporate Email"
+                          placeholder="Corporate Email (Optional)"
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
                         />
@@ -7053,7 +6825,7 @@ function App() {
                       <textarea
                         id="contact-form-msg"
                         className={`ss-form-textarea ${contactErrors.message ? 'has-error' : ''}`}
-                        placeholder="Write Message Here..."
+                        placeholder="Write Message / Order Requirements Here..."
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
                       />
@@ -7068,9 +6840,11 @@ function App() {
                     <button
                       type="submit"
                       className="ss-form-submit"
+                      style={{ background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%', borderRadius: '999px', padding: '16px 24px', color: '#ffffff', fontWeight: 700, fontSize: '15px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 20px rgba(37, 211, 102, 0.35)' }}
                       disabled={contactLoading}
                     >
-                      {contactLoading ? 'Sending Inquiry…' : 'Submit Corporate Inquiry'}
+                      <WhatsAppIcon size={20} />
+                      <span>{contactLoading ? 'Opening WhatsApp…' : 'Submit Inquiry via WhatsApp'}</span>
                     </button>
                   </form>
                 </>
@@ -7436,12 +7210,16 @@ function App() {
 
       {/* 9. ABOUT ORTEX INDUSTRIES MODULAR DETAIL SECTION */}
       {activePage === 'about' && (
-        <AboutPage navigateTo={navigateTo} />
+        <Suspense fallback={<div style={{ padding: '80px 24px', textAlign: 'center', color: '#0891b2', fontWeight: 600 }}>Loading About Us…</div>}>
+          <AboutPage navigateTo={navigateTo} />
+        </Suspense>
       )}
 
       {/* 10. FREQUENTLY ASKED QUESTIONS MODULAR SECTION */}
       {activePage === 'faq' && (
-        <FaqPage navigateTo={navigateTo} />
+        <Suspense fallback={<div style={{ padding: '80px 24px', textAlign: 'center', color: '#0891b2', fontWeight: 600 }}>Loading FAQs…</div>}>
+          <FaqPage navigateTo={navigateTo} />
+        </Suspense>
       )}
 
       {/* --- FLOATING WHATSAPP BUTTON (Indian country code linked) --- */}
@@ -7452,7 +7230,7 @@ function App() {
         rel="noopener noreferrer"
         aria-label="Direct chat with Ortex Industries B2B gifting rep on WhatsApp"
       >
-        <MessageCircle size={28} />
+        <WhatsAppIcon size={28} />
       </a>
 
       {/* --- PRODUCT SPECIFICATION DETAILS MODAL (PDP View) --- */}
@@ -7664,24 +7442,19 @@ function App() {
         </div>
       )}
 
+
       {/* --- SITE FOOTER (Matching Reference Nexora Dark Theme) --- */}
       <footer className="nx-footer" id="footer">
         <div className="nx-footer-container">
           {/* Brand Col */}
           <div>
             <div className="nx-footer-brand-logo">
-              <img src="/logo.jpg" alt="Metcraft Logo" style={{ height: '32px', borderRadius: '4px', background: '#ffffff', padding: '2px' }} />
-              <span>metcraft.</span>
+              <img src="/logo.png" alt="Ortex Industries Private Limited" style={{ height: '40px', objectFit: 'contain' }} />
             </div>
             <p className="nx-footer-desc">
               We help businesses grow through precision engineered metal solutions. Let's build something great together.
             </p>
-            <div className="nx-social-links">
-              <a href="#" className="nx-social-btn" aria-label="Facebook">f</a>
-              <a href="#" className="nx-social-btn" aria-label="Twitter">t</a>
-              <a href="#" className="nx-social-btn" aria-label="LinkedIn">in</a>
-              <a href="#" className="nx-social-btn" aria-label="Instagram">ig</a>
-            </div>
+
           </div>
 
           {/* Quick Links */}
@@ -7712,16 +7485,16 @@ function App() {
             <h3 className="nx-footer-col-title">Contact Us</h3>
             <ul className="nx-footer-links-list">
               <li className="nx-contact-item">
-                <Mail size={16} style={{ color: '#2563eb' }} />
+                <Mail size={16} style={{ color: '#0891b2' }} />
                 <span>sales@ortexindustries.in</span>
               </li>
               <li className="nx-contact-item">
-                <Phone size={16} style={{ color: '#2563eb' }} />
+                <Phone size={16} style={{ color: '#0891b2' }} />
                 <span>+91 92119 47188</span>
               </li>
               <li className="nx-contact-item">
-                <MapPin size={16} style={{ color: '#2563eb' }} />
-                <span>Metcraft Complex, Okhla Phase 3, New Delhi, India</span>
+                <MapPin size={16} style={{ color: '#0891b2' }} />
+                <span>Ortex Industries Private Limited, Delhi, India</span>
               </li>
             </ul>
           </div>
@@ -7729,7 +7502,7 @@ function App() {
 
         {/* Bottom Bar */}
         <div className="nx-footer-bottom">
-          <span>© 2026 Metcraft. All Rights Reserved.</span>
+          <span>© 2026 Ortex Industries Private Limited. All Rights Reserved.</span>
           <div style={{ display: 'flex', gap: '20px' }}>
             <button className="nx-footer-link" onClick={() => navigateTo('privacy')}>Privacy Policy</button>
             <span>|</span>
