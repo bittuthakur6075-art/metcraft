@@ -1,0 +1,6 @@
+# Robots.txt for Ortex Industries Private Limited
+User-agent: *
+Allow: /
+
+# Sitemap Location
+Sitemap: https://ortexindustries.in/sitemap.xml

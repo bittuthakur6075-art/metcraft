@@ -878,15 +878,14 @@
   position: fixed;
   bottom: var(--space-7);
   right: var(--space-7);
-  width: 60px;
-  height: 60px;
-  background-color: #25d366;
+  width: 72px;
+  height: 72px;
+  background-color: transparent;
   border-radius: 50%;
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
   cursor: pointer;
   z-index: 100;
   transition: all var(--motion-duration-fast) ease-out;
@@ -894,17 +893,17 @@
 }
 
 .whatsapp-floating-btn:hover {
-  transform: scale(1.08);
-  background-color: #20ba5a;
+  transform: scale(1.12);
+  filter: brightness(1.05);
 }
 
 .whatsapp-floating-btn::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: -2px;
+  left: -2px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   background-color: #25d366;
   opacity: 0.3;
@@ -914,7 +913,7 @@
 
 @keyframes whatsapp-pulse {
   0% { transform: scale(1); opacity: 0.4; }
-  100% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
 }
 
 /* --- PDP Detail Modal Styles --- */
@@ -2640,7 +2639,8 @@
   margin-bottom: 16px;
 }
 
-.ss-form-input {
+.ss-form-input,
+.ss-form-select {
   padding: 14px 16px;
   font-size: 14px;
   font-family: inherit;
@@ -2651,6 +2651,7 @@
   transition: border-color 0.2s ease;
   width: 100%;
   outline: none;
+  cursor: pointer;
 }
 
 .ss-form-input::placeholder {
@@ -2658,11 +2659,13 @@
   font-weight: 400;
 }
 
-.ss-form-input:focus {
+.ss-form-input:focus,
+.ss-form-select:focus {
   border-color: var(--ss-color-text-dark, #0b0f19);
 }
 
-.ss-form-input.has-error {
+.ss-form-input.has-error,
+.ss-form-select.has-error {
   border-color: #dc2626;
 }
 
@@ -4256,6 +4259,39 @@
   color: #94a3b8;
 }
 
+.nx-contact-item a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.nx-contact-item a:hover {
+  color: #25d366;
+}
+
+.footer-wa-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  color: #25d366;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.footer-wa-badge:hover {
+  background: #25d366;
+  color: #ffffff;
+  border-color: #25d366;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+}
+
 .nx-footer-bottom {
   max-width: 1280px;
   margin: 0 auto;
@@ -5355,6 +5391,279 @@ button, input, select, textarea, a {
 
 .ribbon-item svg {
   color: #22d3ee;
+}
+
+/* --- TOP STICKY ANNOUNCEMENT BAR --- */
+.top-announcement-bar {
+  background: linear-gradient(90deg, #0b0f19 0%, #0f172a 50%, #0b0f19 100%);
+  border-bottom: 1px solid rgba(37, 211, 102, 0.3);
+  color: #ffffff;
+  padding: 10px 24px;
+  position: relative;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.announcement-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.announcement-badge {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.announcement-text {
+  color: #e2e8f0;
+}
+
+.announcement-text strong {
+  color: #ffffff;
+}
+
+.announcement-action-btn {
+  background: rgba(37, 211, 102, 0.15);
+  border: 1px solid rgba(37, 211, 102, 0.4);
+  color: #25d366;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.announcement-action-btn:hover {
+  background: #25d366;
+  color: #ffffff;
+  transform: scale(1.04);
+}
+
+.announcement-close-btn {
+  position: absolute;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: color 0.2s ease;
+}
+
+.announcement-close-btn:hover {
+  color: #ffffff;
+}
+
+/* --- B2B FESTIVE BULK OFFER BANNER SECTION --- */
+.b2b-offer-banner-section {
+  max-width: 1280px;
+  margin: 48px auto;
+  padding: 0 24px;
+}
+
+.b2b-offer-banner-card {
+  background: linear-gradient(135deg, #0b0f19 0%, #1e293b 100%);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: 20px;
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 40px;
+  align-items: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 0 30px rgba(37, 211, 102, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.b2b-offer-banner-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(37, 211, 102, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.b2b-offer-tag {
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  color: #25d366;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.b2b-offer-title {
+  font-size: clamp(26px, 3.5vw, 36px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.b2b-offer-subtitle {
+  font-size: 15px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.b2b-offer-perks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+}
+
+.offer-perk-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: #cbd5e1;
+}
+
+.b2b-offer-right {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.countdown-box {
+  width: 100%;
+}
+
+.countdown-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.countdown-timer-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.timer-unit {
+  background: #0b0f19;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  padding: 10px 14px;
+  border-radius: 10px;
+  min-width: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: #25d366;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.timer-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+.timer-colon {
+  font-size: 20px;
+  font-weight: 800;
+  color: #25d366;
+  margin-top: -12px;
+}
+
+.b2b-offer-claim-btn {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: #ffffff;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.b2b-offer-claim-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(37, 211, 102, 0.5);
+}
+
+.b2b-promo-code-badge {
+  font-size: 12px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.b2b-promo-code-badge strong {
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 900px) {
+  .b2b-offer-banner-card {
+    grid-template-columns: 1fr;
+    padding: 32px 24px;
+  }
+  .b2b-offer-perks {
+    grid-template-columns: 1fr;
+  }
 }
 
 

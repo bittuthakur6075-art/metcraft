@@ -1,5 +1,6 @@
 import React from 'react';
 import { Package, Settings, Palette, ShieldCheck, ArrowRight } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 import './QualityProcessSection.css';
 
 export interface QualityStep {
@@ -41,40 +42,44 @@ export const QualityProcessSection: React.FC = () => {
     <div className="qp-section-wrapper" aria-label="Quality Manufacturing Process">
       <div className="qp-section-container">
         {/* Section Header */}
-        <div className="qp-header-block">
-          <span className="qp-badge">
-            <ShieldCheck size={16} />
-            THE QUALITY WE DELIVER
-          </span>
-          <h2 className="qp-main-title">
-            Quality is a <span className="qp-process-italic">process</span>
-          </h2>
-          <p className="qp-sub-title">
-            Every product moves through four deliberate stages before it reaches you, so the standard never comes down to luck.
-          </p>
-        </div>
+        <ScrollReveal direction="up" delay={0.1}>
+          <div className="qp-header-block">
+            <span className="qp-badge">
+              <ShieldCheck size={16} />
+              THE QUALITY WE DELIVER
+            </span>
+            <h2 className="qp-main-title">
+              Quality is a <span className="qp-process-italic">process</span>
+            </h2>
+            <p className="qp-sub-title">
+              Every product moves through four deliberate stages before it reaches you, so the standard never comes down to luck.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* 4 Process Step Cards */}
         <div className="qp-steps-grid">
           {QUALITY_STEPS.map((step, idx) => (
-            <div className="qp-step-card" key={step.number}>
-              {/* Top Row: Icon (Left) & Step Number (Right) */}
-              <div className="qp-card-top-row">
-                <div className="qp-icon-badge">
-                  {step.icon}
+            <ScrollReveal direction="up" delay={0.12 + idx * 0.1} key={step.number}>
+              <div className="qp-step-card">
+                {/* Top Row: Icon (Left) & Step Number (Right) */}
+                <div className="qp-card-top-row">
+                  <div className="qp-icon-badge">
+                    {step.icon}
+                  </div>
+                  <span className="qp-step-number">{step.number}</span>
                 </div>
-                <span className="qp-step-number">{step.number}</span>
+
+                {/* Title & Description */}
+                <h3 className="qp-card-title">{step.title}</h3>
+                <p className="qp-card-desc">{step.desc}</p>
+
+                {/* Connecting Desktop Arrow (except last step) */}
+                {idx < QUALITY_STEPS.length - 1 && (
+                  <ArrowRight className="qp-step-arrow" size={20} />
+                )}
               </div>
-
-              {/* Title & Description */}
-              <h3 className="qp-card-title">{step.title}</h3>
-              <p className="qp-card-desc">{step.desc}</p>
-
-              {/* Connecting Desktop Arrow (except last step) */}
-              {idx < QUALITY_STEPS.length - 1 && (
-                <ArrowRight className="qp-step-arrow" size={20} />
-              )}
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

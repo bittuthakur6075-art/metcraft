@@ -1,5 +1,6 @@
 import React from 'react';
 import { Factory, FileCheck, Clock, CheckCircle2 } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 import './WhyChooseUsSection.css';
 
 export interface WhyChooseUsCard {
@@ -41,29 +42,33 @@ export const WhyChooseUsSection: React.FC = () => {
     <div className="wcu-section-wrapper" aria-label="Why Choose Ortex Industries">
       <div className="wcu-section-container">
         {/* Header Block */}
-        <div className="wcu-header-block">
-          <span className="wcu-badge">WHY US</span>
-          <h2 className="wcu-main-title">
-            Why choose <span className="wcu-accent">Ortex Industries</span>
-          </h2>
-          <p className="wcu-sub-title">
-            Clients keep coming back for how we work, not only for what we make.
-          </p>
-        </div>
+        <ScrollReveal direction="up" delay={0.1}>
+          <div className="wcu-header-block">
+            <span className="wcu-badge">WHY US</span>
+            <h2 className="wcu-main-title">
+              Why choose <span className="wcu-accent">Ortex Industries</span>
+            </h2>
+            <p className="wcu-sub-title">
+              Clients keep coming back for how we work, not only for what we make.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* 4 Feature Cards */}
         <div className="wcu-cards-grid">
-          {WHY_CHOOSE_US_CARDS.map((card) => (
-            <div className="wcu-card" key={card.title}>
-              {/* Pastel Icon Badge */}
-              <div className={`wcu-icon-badge wcu-icon-${card.variant}`}>
-                {card.icon}
-              </div>
+          {WHY_CHOOSE_US_CARDS.map((card, idx) => (
+            <ScrollReveal direction="up" delay={0.15 + idx * 0.1} key={card.title}>
+              <div className="wcu-card">
+                {/* Pastel Icon Badge */}
+                <div className={`wcu-icon-badge wcu-icon-${card.variant}`}>
+                  {card.icon}
+                </div>
 
-              {/* Title & Description */}
-              <h3 className="wcu-card-title">{card.title}</h3>
-              <p className="wcu-card-desc">{card.desc}</p>
-            </div>
+                {/* Title & Description */}
+                <h3 className="wcu-card-title">{card.title}</h3>
+                <p className="wcu-card-desc">{card.desc}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 import {
   Search,
   X,
@@ -15,6 +17,8 @@ import {
   Phone,
   Mail,
   MapPin,
+  Clock,
+  Building2,
   Briefcase,
   ShieldCheck,
   Award,
@@ -38,6 +42,7 @@ import { WhyChooseUsSection } from './components/WhyChooseUsSection';
 import { IndustriesWeServeSection } from './components/IndustriesWeServeSection';
 import { B2BAdvantageSection, WhyChooseOrtexSection } from './components/B2BAdvantageSection';
 import { WhatsAppIcon } from './components/WhatsAppIcon';
+import { ScrollReveal } from './components/ScrollReveal';
 
 const AboutPage = lazy(() => import('./AboutPage').then(m => ({ default: m.AboutPage })));
 const FaqPage = lazy(() => import('./FaqPage').then(m => ({ default: m.FaqPage })));
@@ -5248,6 +5253,10 @@ function App() {
   const [contactEmail, setContactEmail] = useState<string>('');
   const [contactPhone, setContactPhone] = useState<string>('');
   const [contactCompany, setContactCompany] = useState<string>('');
+  const [contactCategory, setContactCategory] = useState<string>('');
+  const [contactQuantity, setContactQuantity] = useState<string>('');
+  const [contactCustomization, setContactCustomization] = useState<string>('');
+  const [contactTimeline, setContactTimeline] = useState<string>('');
   const [contactMessage, setContactMessage] = useState<string>('');
   const [contactErrors, setContactErrors] = useState<Record<string, string>>({});
   const [contactSuccess, setContactSuccess] = useState<boolean>(false);
@@ -5266,7 +5275,6 @@ function App() {
   const [rfqErrors, setRfqErrors] = useState<Record<string, string>>({});
   const [rfqSuccess, setRfqSuccess] = useState<boolean>(false);
   const [rfqSubmitLoading, setRfqSubmitLoading] = useState<boolean>(false);
-
 
   // Scrolled state for header styles
   const [scrolled, setScrolled] = useState<boolean>(false);
@@ -5304,15 +5312,47 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedProduct, mobileNavOpen, confirmDeleteDialog]);
 
+  // Lenis Smooth Scroll Setup
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    lenisRef.current = lenis;
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
   // Lock body scroll when mobile menu or modal is open
   useEffect(() => {
     if (mobileNavOpen || selectedProduct !== null || confirmDeleteDialog.isOpen) {
       document.body.style.overflow = 'hidden';
+      if (lenisRef.current) lenisRef.current.stop();
     } else {
       document.body.style.overflow = '';
+      if (lenisRef.current) lenisRef.current.start();
     }
     return () => {
       document.body.style.overflow = '';
+      if (lenisRef.current) lenisRef.current.start();
     };
   }, [mobileNavOpen, selectedProduct, confirmDeleteDialog.isOpen]);
 
@@ -5322,10 +5362,50 @@ function App() {
     setTimeout(() => setSrAnnouncement(''), 1000);
   };
 
+  // Dynamic Document Title for SEO & Browser History
+  useEffect(() => {
+    switch (activePage) {
+      case 'home':
+        document.title = "Ortex Industries™ | Premier CNC Metal Corporate Gifting & Custom Manufacturing India";
+        break;
+      case 'catalog':
+        document.title = "Corporate Metal Catalog | Ortex Industries Private Limited";
+        break;
+      case 'about':
+        document.title = "About Us | Ortex Industries Private Limited";
+        break;
+      case 'contact':
+        document.title = "Contact Us & B2B Inquiry | Ortex Industries Private Limited";
+        break;
+      case 'quote':
+        document.title = "B2B Quote Request | Ortex Industries Private Limited";
+        break;
+      case 'privacy':
+        document.title = "Privacy Policy | Ortex Industries Legal Desk";
+        break;
+      case 'terms':
+        document.title = "Terms & Conditions | Ortex Industries Legal Desk";
+        break;
+      case 'cookie':
+        document.title = "Cookie Policy | Ortex Industries Legal Desk";
+        break;
+      case 'acceptable-use':
+      case 'use':
+        document.title = "Acceptable Use Policy | Ortex Industries Legal Desk";
+        break;
+      default:
+        document.title = "Ortex Industries™ | Premier CNC Metal Manufacturing";
+    }
+  }, [activePage]);
+
   // Nav actions
   const navigateTo = (page: string) => {
     setActivePage(page);
-    window.scrollTo(0, 0);
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
     announce('Navigated to ' + page + ' page.');
   };
 
@@ -5473,8 +5553,19 @@ function App() {
     setContactLoading(true);
     announce('Formatting your inquiry for WhatsApp dispatch...');
 
-    const formattedMessage = `Hello Ortex Industries,%0A%0AI would like to submit a B2B corporate inquiry:%0A%0A👤 *Name:* ${encodeURIComponent(contactName.trim())}%0A🏢 *Company:* ${encodeURIComponent(contactCompany.trim())}%0A📧 *Email:* ${encodeURIComponent(contactEmail.trim() || 'N/A')}%0A📞 *Phone:* ${encodeURIComponent(contactPhone.trim())}%0A%0A📝 *Requirement / Message:*%0A${encodeURIComponent(contactMessage.trim())}`;
-    const waUrl = `https://wa.me/919211947188?text=${formattedMessage}`;
+    const rawContactMessage = `Hello Ortex Industries,
+
+I would like to submit a B2B corporate inquiry:
+
+• Name: ${contactName.trim()}
+• Company: ${contactCompany.trim()}
+• Email: ${contactEmail.trim() || 'N/A'}
+• Phone: ${contactPhone.trim()}${contactCategory ? `\n• Product Interest: ${contactCategory}` : ''}${contactQuantity ? `\n• Quantity Range: ${contactQuantity}` : ''}${contactCustomization ? `\n• Branding / Finish: ${contactCustomization}` : ''}${contactTimeline ? `\n• Delivery Timeline: ${contactTimeline}` : ''}
+
+• Requirement / Message:
+${contactMessage.trim()}`;
+
+    const waUrl = `https://wa.me/919211947188?text=${encodeURIComponent(rawContactMessage)}`;
     setLastWaUrl(waUrl);
 
     setTimeout(() => {
@@ -5488,6 +5579,10 @@ function App() {
       setContactEmail('');
       setContactPhone('');
       setContactCompany('');
+      setContactCategory('');
+      setContactQuantity('');
+      setContactCustomization('');
+      setContactTimeline('');
       setContactMessage('');
       announce('Inquiry formatted and dispatched directly to WhatsApp!');
     }, 400);
@@ -5535,16 +5630,33 @@ function App() {
     announce('Formatting wholesale RFQ for WhatsApp dispatch...');
     
     // Format RFQ items list
-    const itemsList = quoteList.map((item, idx) => {
+    const itemsListText = quoteList.map((item, idx) => {
       let discountRate = 1;
       if (item.quantity >= 250) discountRate = 0.85;
       else if (item.quantity >= 100) discountRate = 0.90;
       const subtotal = Math.round(item.product.price * discountRate * item.quantity);
       return `${idx + 1}. *${item.product.name}* (Qty: ${item.quantity}) - ₹${subtotal.toLocaleString('en-IN')}`;
-    }).join('%0A');
+    }).join('\n');
 
-    const formattedMessage = `Hello Ortex Industries,%0A%0AI would like to submit a Wholesale Request For Quote (RFQ):%0A%0A📋 *RFQ Items List:*%0A${encodeURIComponent(itemsList)}%0A%0A💰 *Indicative Estimate:*%0ASubtotal: ₹${calculatedSubtotal.toLocaleString('en-IN')}%0AGST (18%): ₹${estimatedGst.toLocaleString('en-IN')}%0ATotal (incl. GST): ₹${totalRfqEstimate.toLocaleString('en-IN')}%0A%0A👤 *Client Details:*%0AName: ${encodeURIComponent(rfqName.trim())} (${encodeURIComponent(rfqDesignation.trim())})%0ACompany: ${encodeURIComponent(rfqCompany.trim())}%0APhone: ${encodeURIComponent(rfqPhone.trim())}%0AEmail: ${encodeURIComponent(rfqEmail.trim() || 'N/A')}${rfqGstEnabled && rfqGst ? `%0AGSTIN: ${encodeURIComponent(rfqGst.trim().toUpperCase())}` : ''}${rfqInstructions.trim() ? `%0A%0A📝 *Instructions:*%0A${encodeURIComponent(rfqInstructions.trim())}` : ''}`;
-    const waUrl = `https://wa.me/919211947188?text=${formattedMessage}`;
+    const rawRfqMessage = `Hello Ortex Industries,
+
+I would like to submit a Wholesale Request For Quote (RFQ):
+
+RFQ Items List:
+${itemsListText}
+
+Indicative Estimate:
+• Subtotal: ₹${calculatedSubtotal.toLocaleString('en-IN')}
+• GST (18%): ₹${estimatedGst.toLocaleString('en-IN')}
+• Total (incl. GST): ₹${totalRfqEstimate.toLocaleString('en-IN')}
+
+Client Details:
+• Name: ${rfqName.trim()} (${rfqDesignation.trim()})
+• Company: ${rfqCompany.trim()}
+• Phone: ${rfqPhone.trim()}
+• Email: ${rfqEmail.trim() || 'N/A'}${rfqGstEnabled && rfqGst ? `\n• GSTIN: ${rfqGst.trim().toUpperCase()}` : ''}${rfqInstructions.trim() ? `\n\nInstructions / Notes:\n${rfqInstructions.trim()}` : ''}`;
+
+    const waUrl = `https://wa.me/919211947188?text=${encodeURIComponent(rawRfqMessage)}`;
     setLastWaUrl(waUrl);
 
     setTimeout(() => {
@@ -5605,7 +5717,8 @@ function App() {
   const paginatedProducts = filteredProducts.slice((validCurrentPage - 1) * itemsPerPage, validCurrentPage * itemsPerPage);
 
   // Pre-filled WhatsApp Link: Indian number +919211947188
-  const whatsappPreFilledLink = "https://wa.me/919211947188?text=Hello%20Ortex%20Industries,%20I%20am%20interested%20in%20inquiring%20about%20custom%20metal%20promotional%20gifts%20for%20my%20company.%20Please%20share%20your%20latest%20corporate%20catalog%20and%20wholesale%20price%20list.";
+  const defaultRawMessage = `Hello Ortex Industries,\n\nI am interested in inquiring about custom metal promotional gifts for my company. Please share your latest corporate catalog and wholesale price list.`;
+  const whatsappPreFilledLink = `https://wa.me/919211947188?text=${encodeURIComponent(defaultRawMessage)}`;
 
   return (
     <div className="app-container">
@@ -5815,32 +5928,40 @@ function App() {
           >
             <div className="nx-hero-overlay">
               <div className="nx-hero-container">
-                <span className="nx-hero-subtag">WELCOME TO ORTEX INDUSTRIES</span>
-                <h1 className="nx-hero-heading">
-                  We Build Precision Metal Experiences<br />
-                  That <span className="accent-teal">Inspire</span>
-                </h1>
-                <p className="nx-hero-desc">
-                  We are a premier precision metal manufacturing agency helping corporate brands grow with high-quality CNC items, custom engraving & B2B manufacturing strategy.
-                </p>
+                <ScrollReveal direction="up" delay={0.1}>
+                  <span className="nx-hero-subtag">WELCOME TO ORTEX INDUSTRIES</span>
+                </ScrollReveal>
+                <ScrollReveal direction="up" delay={0.2}>
+                  <h1 className="nx-hero-heading">
+                    We Build Precision Metal Experiences<br />
+                    That <span className="accent-teal">Inspire</span>
+                  </h1>
+                </ScrollReveal>
+                <ScrollReveal direction="up" delay={0.3}>
+                  <p className="nx-hero-desc">
+                    We are a premier precision metal manufacturing agency helping corporate brands grow with high-quality CNC items, custom engraving & B2B manufacturing strategy.
+                  </p>
+                </ScrollReveal>
 
-                <div className="nx-hero-actions">
-                  <button className="nx-btn-primary" onClick={() => navigateTo('catalog')}>
-                    <span>Explore</span>
-                    <ArrowRight size={16} />
-                  </button>
+                <ScrollReveal direction="up" delay={0.4}>
+                  <div className="nx-hero-actions">
+                    <button className="nx-btn-primary" onClick={() => navigateTo('catalog')}>
+                      <span>Explore</span>
+                      <ArrowRight size={16} />
+                    </button>
 
-                  <a 
-                    href={whatsappPreFilledLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ss-btn-whatsapp"
-                    style={{ padding: '14px 28px', fontSize: '15px', fontWeight: 700 }}
-                  >
-                    <WhatsAppIcon size={18} />
-                    <span>WhatsApp Get Quote</span>
-                  </a>
-                </div>
+                    <a 
+                      href={whatsappPreFilledLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ss-btn-whatsapp"
+                      style={{ padding: '14px 28px', fontSize: '15px', fontWeight: 700 }}
+                    >
+                      <WhatsAppIcon size={18} />
+                      <span>WhatsApp Get Quote</span>
+                    </a>
+                  </div>
+                </ScrollReveal>
               </div>
             </div>
           </section>
@@ -5848,39 +5969,41 @@ function App() {
           {/* Trust Stats Banner Section */}
           <section className="py-12 bg-primary border-b border-white/10">
             <div className="lp-wrap">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                <div 
-                  className="flex flex-col items-center text-center"
-                  style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
-                >
-                  <div className="nx-stat-num">17+</div>
-                  <div className="nx-stat-label">Years Crafting Custom Products</div>
-                </div>
+              <ScrollReveal direction="up" delay={0.1}>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div 
+                    className="flex flex-col items-center text-center"
+                    style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
+                  >
+                    <div className="nx-stat-num">17+</div>
+                    <div className="nx-stat-label">Years Crafting Custom Products</div>
+                  </div>
 
-                <div 
-                  className="flex flex-col items-center text-center"
-                  style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
-                >
-                  <div className="nx-stat-num">5L+</div>
-                  <div className="nx-stat-label">Products Delivered to Date</div>
-                </div>
+                  <div 
+                    className="flex flex-col items-center text-center"
+                    style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
+                  >
+                    <div className="nx-stat-num">5L+</div>
+                    <div className="nx-stat-label">Products Delivered to Date</div>
+                  </div>
 
-                <div 
-                  className="flex flex-col items-center text-center"
-                  style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
-                >
-                  <div className="nx-stat-num">1,200+</div>
-                  <div className="nx-stat-label">Brands & Businesses Served</div>
-                </div>
+                  <div 
+                    className="flex flex-col items-center text-center"
+                    style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
+                  >
+                    <div className="nx-stat-num">1,200+</div>
+                    <div className="nx-stat-label">Brands & Businesses Served</div>
+                  </div>
 
-                <div 
-                  className="flex flex-col items-center text-center"
-                  style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
-                >
-                  <div className="nx-stat-num">99%</div>
-                  <div className="nx-stat-label">Orders Dispatched On Time</div>
+                  <div 
+                    className="flex flex-col items-center text-center"
+                    style={{ opacity: 1, filter: 'blur(0px)', transform: 'none' }}
+                  >
+                    <div className="nx-stat-num">99%</div>
+                    <div className="nx-stat-label">Orders Dispatched On Time</div>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             </div>
           </section>
 
@@ -5891,17 +6014,19 @@ function App() {
           {/* #4 — CURATED 8 PREMIUM PRODUCTS SHOWCASE (2 ROWS OF 4 CARDS) */}
           <section className="nx-section" style={{ background: '#ffffff', maxWidth: '100%', padding: '80px 0', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 32px' }}>
-              <div className="nx-section-header" style={{ marginBottom: '44px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="nx-section-subtag" style={{ display: 'inline-flex', padding: '6px 18px', background: '#ecfeff', border: '1px solid #cffafe', color: '#0891b2', borderRadius: '999px', margin: '0 auto 14px auto', fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em' }}>
-                  PREMIUM CORPORATE CATALOG
-                </span>
-                <h2 className="nx-section-title" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 12px auto' }}>
-                  Selected High-Quality <span className="accent-teal">Corporate Products</span>
-                </h2>
-                <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '680px', margin: '0 auto', textAlign: 'center', lineHeight: '1.6' }}>
-                  Hand-curated precision metal products, executive gifts & EDC accessories.
-                </p>
-              </div>
+              <ScrollReveal direction="up" delay={0.1}>
+                <div className="nx-section-header" style={{ marginBottom: '44px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  <span className="nx-section-subtag" style={{ display: 'inline-flex', padding: '6px 18px', background: '#ecfeff', border: '1px solid #cffafe', color: '#0891b2', borderRadius: '999px', margin: '0 auto 14px auto', fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em' }}>
+                    PREMIUM CORPORATE CATALOG
+                  </span>
+                  <h2 className="nx-section-title" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 12px auto' }}>
+                    Selected High-Quality <span className="accent-teal">Corporate Products</span>
+                  </h2>
+                  <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '680px', margin: '0 auto', textAlign: 'center', lineHeight: '1.6' }}>
+                    Hand-curated precision metal products, executive gifts & EDC accessories.
+                  </p>
+                </div>
+              </ScrollReveal>
 
               {/* 2-Row 4-Column Products Grid (8 products) */}
               <div className="mc-grid-showcase-2rows">
@@ -5913,43 +6038,45 @@ function App() {
                   const formattedPrice = `₹${product.price.toLocaleString('en-IN')}`;
 
                   return (
-                    <div className="mc-card" key={'home-catalog-8grid-' + product.id + '-' + idx}>
-                      <div className="mc-card-top">
-                        <span className="mc-badge-tag">{tagBadge}</span>
-                        <img src={product.image} alt={product.name} className="mc-card-img" />
+                    <ScrollReveal direction="up" delay={0.08 * (idx % 4)} key={'home-catalog-8grid-' + product.id + '-' + idx}>
+                      <div className="mc-card">
+                        <div className="mc-card-top">
+                          <span className="mc-badge-tag">{tagBadge}</span>
+                          <img src={product.image} alt={product.name} className="mc-card-img" />
+                        </div>
+
+                        <div className="mc-card-body">
+                          <div className="mc-card-title-row">
+                            <h3 className="mc-card-title">{product.name}</h3>
+                            <span className="mc-card-price">{formattedPrice}</span>
+                          </div>
+
+                          <div className="mc-card-rating">
+                            <span className="mc-star-icon">★</span>
+                            <span>{ratingScore} ({reviewCount} Reviews)</span>
+                          </div>
+
+                          <div style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 12px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            ⚙️ {product.material}
+                          </div>
+
+                          <div className="mc-card-actions">
+                            <button
+                              className="mc-btn-chart"
+                              onClick={() => addToQuoteList(product, 50, '')}
+                            >
+                              Add to Quote
+                            </button>
+                            <button
+                              className="mc-btn-buy"
+                              onClick={(e) => openPdp(product, e.currentTarget)}
+                            >
+                              View Item
+                            </button>
+                          </div>
+                        </div>
                       </div>
-
-                      <div className="mc-card-body">
-                        <div className="mc-card-title-row">
-                          <h3 className="mc-card-title">{product.name}</h3>
-                          <span className="mc-card-price">{formattedPrice}</span>
-                        </div>
-
-                        <div className="mc-card-rating">
-                          <span className="mc-star-icon">★</span>
-                          <span>{ratingScore} ({reviewCount} Reviews)</span>
-                        </div>
-
-                        <div style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 12px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          ⚙️ {product.material}
-                        </div>
-
-                        <div className="mc-card-actions">
-                          <button
-                            className="mc-btn-chart"
-                            onClick={() => addToQuoteList(product, 50, '')}
-                          >
-                            Add to Quote
-                          </button>
-                          <button
-                            className="mc-btn-buy"
-                            onClick={(e) => openPdp(product, e.currentTarget)}
-                          >
-                            View Item
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                    </ScrollReveal>
                   );
                 })}
               </div>
@@ -6820,6 +6947,71 @@ function App() {
                       </div>
                     </div>
 
+                    {/* Project Specific Details: Category + Quantity */}
+                    <div className="ss-form-row">
+                      <div className="ss-form-field">
+                        <select
+                          id="contact-form-category"
+                          className="ss-form-select"
+                          value={contactCategory}
+                          onChange={(e) => setContactCategory(e.target.value)}
+                        >
+                          <option value="">Select Product Category (Optional)</option>
+                          <option value="Custom Metal Keychains">Custom Metal Keychains</option>
+                          <option value="Executive Metal Pens">Executive Metal Pens</option>
+                          <option value="Solid Metal Coasters & Desk Accessories">Solid Metal Coasters & Desk Accessories</option>
+                          <option value="Luxury Metal Card Holders & Cards">Luxury Metal Card Holders & Cards</option>
+                          <option value="Custom Trophies, Medals & Badges">Custom Trophies, Medals & Badges</option>
+                          <option value="Other Custom CNC Metal Gifting">Other Custom CNC Metal Gifting</option>
+                        </select>
+                      </div>
+                      <div className="ss-form-field">
+                        <select
+                          id="contact-form-quantity"
+                          className="ss-form-select"
+                          value={contactQuantity}
+                          onChange={(e) => setContactQuantity(e.target.value)}
+                        >
+                          <option value="">Estimated Quantity Range (Optional)</option>
+                          <option value="50 - 100 pcs (Sample Run)">50 - 100 pcs (Sample Run)</option>
+                          <option value="100 - 500 pcs (Medium Bulk)">100 - 500 pcs (Medium Bulk)</option>
+                          <option value="500 - 2,000 pcs (Large Wholesale)">500 - 2,000 pcs (Large Wholesale)</option>
+                          <option value="2,000+ pcs (Enterprise Batch)">2,000+ pcs (Enterprise Batch)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Project Specific Details: Logo Finish + Timeline */}
+                    <div className="ss-form-row">
+                      <div className="ss-form-field">
+                        <select
+                          id="contact-form-customization"
+                          className="ss-form-select"
+                          value={contactCustomization}
+                          onChange={(e) => setContactCustomization(e.target.value)}
+                        >
+                          <option value="">Logo & Finish Requirement (Optional)</option>
+                          <option value="Laser Engraved Logo">Laser Engraved Logo</option>
+                          <option value="CNC Embossed / Debossed Logo">CNC Embossed / Debossed Logo</option>
+                          <option value="Anodized Matte Finish (Black / Silver / Gold)">Anodized Matte Finish (Black / Silver / Gold)</option>
+                          <option value="Custom Premium Gift Box Packaging">Custom Premium Gift Box Packaging</option>
+                        </select>
+                      </div>
+                      <div className="ss-form-field">
+                        <select
+                          id="contact-form-timeline"
+                          className="ss-form-select"
+                          value={contactTimeline}
+                          onChange={(e) => setContactTimeline(e.target.value)}
+                        >
+                          <option value="">Target Delivery Timeline (Optional)</option>
+                          <option value="Urgent (1 - 2 Weeks)">Urgent (1 - 2 Weeks)</option>
+                          <option value="Standard (2 - 4 Weeks)">Standard (2 - 4 Weeks)</option>
+                          <option value="Flexible / Planning Ahead (1+ Month)">Flexible / Planning Ahead (1+ Month)</option>
+                        </select>
+                      </div>
+                    </div>
+
                     {/* Message */}
                     <div className="ss-form-field">
                       <textarea
@@ -6839,13 +7031,25 @@ function App() {
 
                     <button
                       type="submit"
-                      className="ss-form-submit"
-                      style={{ background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%', borderRadius: '999px', padding: '16px 24px', color: '#ffffff', fontWeight: 700, fontSize: '15px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 20px rgba(37, 211, 102, 0.35)' }}
+                      className="ss-btn-whatsapp"
                       disabled={contactLoading}
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        padding: '16px 24px',
+                        fontSize: '16px',
+                        fontWeight: 700,
+                        borderRadius: '999px',
+                        marginTop: '8px'
+                      }}
                     >
-                      <WhatsAppIcon size={20} />
-                      <span>{contactLoading ? 'Opening WhatsApp…' : 'Submit Inquiry via WhatsApp'}</span>
+                      <WhatsAppIcon size={22} />
+                      <span>{contactLoading ? 'Formatting Inquiry...' : 'Submit Inquiry via WhatsApp'}</span>
                     </button>
+
+                    <p style={{ fontSize: '12px', color: '#94a3b8', textAlign: 'center', marginTop: '12px', margin: '12px 0 0' }}>
+                      🔒 Your corporate details are 100% confidential. Formatted directly to Senior Engineer WhatsApp line.
+                    </p>
                   </form>
                 </>
               )}
@@ -6960,8 +7164,25 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '48px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '24px' }}>
-            <button onClick={() => navigateTo('home')} className="btn btn-secondary">
-              Back to Home Desk
+            <button 
+              onClick={() => navigateTo('home')} 
+              style={{
+                padding: '14px 28px',
+                fontSize: '15px',
+                fontWeight: '700',
+                borderRadius: '999px',
+                background: '#0f172a',
+                color: '#ffffff',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+              <span>Back to Home Desk</span>
             </button>
           </div>
         </section>
@@ -7056,8 +7277,25 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '48px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '24px' }}>
-            <button onClick={() => navigateTo('home')} className="btn btn-secondary">
-              Back to Home Desk
+            <button 
+              onClick={() => navigateTo('home')} 
+              style={{
+                padding: '14px 28px',
+                fontSize: '15px',
+                fontWeight: '700',
+                borderRadius: '999px',
+                background: '#0f172a',
+                color: '#ffffff',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+              <span>Back to Home Desk</span>
             </button>
           </div>
         </section>
@@ -7134,8 +7372,25 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '48px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '24px' }}>
-            <button onClick={() => navigateTo('home')} className="btn btn-secondary">
-              Back to Home Desk
+            <button 
+              onClick={() => navigateTo('home')} 
+              style={{
+                padding: '14px 28px',
+                fontSize: '15px',
+                fontWeight: '700',
+                borderRadius: '999px',
+                background: '#0f172a',
+                color: '#ffffff',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+              <span>Back to Home Desk</span>
             </button>
           </div>
         </section>
@@ -7201,8 +7456,25 @@ function App() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '48px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '24px' }}>
-            <button onClick={() => navigateTo('home')} className="btn btn-secondary">
-              Back to Home Desk
+            <button 
+              onClick={() => navigateTo('home')} 
+              style={{
+                padding: '14px 28px',
+                fontSize: '15px',
+                fontWeight: '700',
+                borderRadius: '999px',
+                background: '#0f172a',
+                color: '#ffffff',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+              <span>Back to Home Desk</span>
             </button>
           </div>
         </section>
@@ -7230,7 +7502,7 @@ function App() {
         rel="noopener noreferrer"
         aria-label="Direct chat with Ortex Industries B2B gifting rep on WhatsApp"
       >
-        <WhatsAppIcon size={28} />
+        <WhatsAppIcon size={68} useImage={true} />
       </a>
 
       {/* --- PRODUCT SPECIFICATION DETAILS MODAL (PDP View) --- */}
@@ -7455,6 +7727,10 @@ function App() {
               We help businesses grow through precision engineered metal solutions. Let's build something great together.
             </p>
 
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontSize: '12px', background: 'rgba(255, 255, 255, 0.05)', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)', width: 'fit-content' }}>
+              <ShieldCheck size={16} style={{ color: '#25d366', flexShrink: 0 }} />
+              <span>ISO 9001:2015 Precision CNC Certified</span>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -7485,16 +7761,27 @@ function App() {
             <h3 className="nx-footer-col-title">Contact Us</h3>
             <ul className="nx-footer-links-list">
               <li className="nx-contact-item">
-                <Mail size={16} style={{ color: '#0891b2' }} />
-                <span>sales@ortexindustries.in</span>
+                <Mail size={16} style={{ color: '#25d366', flexShrink: 0 }} />
+                <a href="mailto:sales@ortexindustries.in">sales@ortexindustries.in</a>
               </li>
               <li className="nx-contact-item">
-                <Phone size={16} style={{ color: '#0891b2' }} />
-                <span>+91 92119 47188</span>
+                <Phone size={16} style={{ color: '#25d366', flexShrink: 0 }} />
+                <a href="https://wa.me/919211947188" target="_blank" rel="noopener noreferrer">+91 92119 47188</a>
               </li>
               <li className="nx-contact-item">
-                <MapPin size={16} style={{ color: '#0891b2' }} />
+                <MapPin size={16} style={{ color: '#25d366', flexShrink: 0 }} />
                 <span>Ortex Industries Private Limited, Delhi, India</span>
+              </li>
+              <li style={{ marginTop: '10px' }}>
+                <a
+                  href={whatsappPreFilledLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-wa-badge"
+                >
+                  <WhatsAppIcon size={16} />
+                  <span>Direct WhatsApp Chat</span>
+                </a>
               </li>
             </ul>
           </div>
@@ -7503,10 +7790,12 @@ function App() {
         {/* Bottom Bar */}
         <div className="nx-footer-bottom">
           <span>© 2026 Ortex Industries Private Limited. All Rights Reserved.</span>
-          <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <button className="nx-footer-link" onClick={() => navigateTo('privacy')}>Privacy Policy</button>
             <span>|</span>
             <button className="nx-footer-link" onClick={() => navigateTo('terms')}>Terms & Conditions</button>
+            <span>|</span>
+            <button className="nx-footer-link" onClick={() => navigateTo('cookie')}>Cookie Policy</button>
           </div>
         </div>
       </footer>

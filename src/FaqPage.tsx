@@ -266,7 +266,7 @@ export function FaqPage({ navigateTo }: FaqPageProps) {
             Contact Us
           </button>
           <a
-            href="https://wa.me/919211947188?text=Hello%20Ortex%20Industries,%20I%20have%20an%20inquiry%20regarding%20corporate%20promotional%20gifting%20runs."
+            href={`https://wa.me/919211947188?text=${encodeURIComponent("Hello Ortex Industries,\n\nI have an inquiry regarding corporate promotional gifting runs.")}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
