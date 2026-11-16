@@ -73,6 +73,622 @@ interface QuoteItem {
 // Full 351 products catalog extracted from live storefront
 const PRODUCTS: Product[] = [
   {
+    "id": "mc_prod_01",
+    "name": "YouVah Premium Custom Metal Emblem Badge",
+    "category": "office",
+    "price": 399,
+    "description": "High-precision polished metal emblem badge with vibrant purple enamel inlay and silver chrome metallic finish. Designed for executive branding, corporate events, and uniform identification.",
+    "material": "Die-Cast Zinc Alloy & Enamel",
+    "weight": "28 grams",
+    "image": "/products/product-01.jpeg",
+    "inStock": true,
+    "stockCount": 50,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_02",
+    "name": "Hexagon Geometric Precision Enamel Lapel Pin",
+    "category": "everyday",
+    "price": 349,
+    "description": "Architectural multi-faceted lapel pin with multi-tone blue and lime hard enamel and gold-plated butterfly clutch attachment. An elite accessory for modern corporate identity.",
+    "material": "Gold-Plated Brass & Hard Enamel",
+    "weight": "18 grams",
+    "image": "/products/product-02.jpeg",
+    "inStock": true,
+    "stockCount": 65,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_03",
+    "name": "NDRF Commemorative Gold Service Medal",
+    "category": "everyday",
+    "price": 799,
+    "description": "Prestigious circular dual-layer commemorative medal featuring the National Emblem of India, embossed rescue operative relief detailing, and rich gloss enamel accent.",
+    "material": "Solid Gold Plated Brass",
+    "weight": "65 grams",
+    "image": "/products/product-03.jpeg",
+    "inStock": true,
+    "stockCount": 30,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_04",
+    "name": "Minimalist Relief Emblem Metal Key Ring",
+    "category": "everyday",
+    "price": 299,
+    "description": "Contemporary circular relief keychain featuring textured background engraving and high-tensile stainless steel key ring. Built for durability and refined daily use.",
+    "material": "Machined Alloy Steel",
+    "weight": "32 grams",
+    "image": "/products/product-04.jpeg",
+    "inStock": true,
+    "stockCount": 80,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_05",
+    "name": "Lotus Emblem Custom Branded Key Chain",
+    "category": "everyday",
+    "price": 249,
+    "description": "Eye-catching circular keychain with dual-color accent bezel, high-gloss print inlay, and secure ring clasp. Ideal for large-scale institutional campaigns.",
+    "material": "Alloy Steel & Silicone Bezel",
+    "weight": "25 grams",
+    "image": "/products/product-05.jpeg",
+    "inStock": true,
+    "stockCount": 120,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_06",
+    "name": "National Party Lotus Campaign Key Ring",
+    "category": "everyday",
+    "price": 249,
+    "description": "Vibrant promotional keychain with circular dual-tone contrast border and heavy-gauge chain link. Engineered for mass distribution and high endurance.",
+    "material": "Plated Alloy Steel",
+    "weight": "24 grams",
+    "image": "/products/product-06.jpeg",
+    "inStock": true,
+    "stockCount": 150,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_07",
+    "name": "Circular Enameled Campaign Metal Badge",
+    "category": "office",
+    "price": 199,
+    "description": "High-clarity circular metal button badge featuring tricolour background and epoxy protective topcoat. Equipped with rear safety pin clasp.",
+    "material": "Tinplate & Epoxy Dome",
+    "weight": "16 grams",
+    "image": "/products/product-07.jpeg",
+    "inStock": true,
+    "stockCount": 200,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_08",
+    "name": "Executive Shield Insignia Metal Badge",
+    "category": "office",
+    "price": 229,
+    "description": "Stately elongated shield badge with vibrant bi-color printing and contoured border. A standout emblem for volunteer teams and conference delegates.",
+    "material": "Lightweight Aluminum Alloy",
+    "weight": "20 grams",
+    "image": "/products/product-08.jpeg",
+    "inStock": true,
+    "stockCount": 140,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_09",
+    "name": "National Security Guard Training Centre Medallion",
+    "category": "everyday",
+    "price": 699,
+    "description": "Distinguished military & VIP driving course commemorative gold-rimmed medallion with laser-cut relief emblem and deep black enamel bezel.",
+    "material": "Solid Brass & Gold Plating",
+    "weight": "58 grams",
+    "image": "/products/product-09.jpeg",
+    "inStock": true,
+    "stockCount": 40,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_10",
+    "name": "YouVah & BNI International Gold Lapel Pin Set",
+    "category": "everyday",
+    "price": 599,
+    "description": "Exclusive B2B networking set combining high-relief corporate logo badges with circular fluted-edge gold lapel pin. Premium executive prestige.",
+    "material": "Solid Gold Plated Alloy",
+    "weight": "42 grams",
+    "image": "/products/product-10.jpeg",
+    "inStock": true,
+    "stockCount": 35,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_11",
+    "name": "Jasmine Imprints & Team Leader Gold Shield Pins",
+    "category": "everyday",
+    "price": 499,
+    "description": "Set of twin executive gold insignia featuring round corporate emblem and crown-crested Team Leader shield with textured sandblast reverse.",
+    "material": "Gold-Plated Die-Cast Brass",
+    "weight": "36 grams",
+    "image": "/products/product-11.jpeg",
+    "inStock": true,
+    "stockCount": 55,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_12",
+    "name": "LIC Life Insurance Executive Gold Metal Badge",
+    "category": "office",
+    "price": 449,
+    "description": "Signature dual-tone brushed gold and gloss black executive nameplate badge with rounded safety corners and dual magnetic fastener.",
+    "material": "Brushed Brass & Gold Plating",
+    "weight": "34 grams",
+    "image": "/products/product-12.jpeg",
+    "inStock": true,
+    "stockCount": 90,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_13",
+    "name": "Executive Corporate Name Badges - C&G & Tiffany Style",
+    "category": "office",
+    "price": 499,
+    "description": "Bespoke executive personnel name tags with polished metallic borders, crystal-clear resin dome, and ultra-crisp typography.",
+    "material": "Polished Stainless Steel & Acrylic",
+    "weight": "30 grams",
+    "image": "/products/product-13.jpeg",
+    "inStock": true,
+    "stockCount": 75,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_14",
+    "name": "Trimurti Silver Magnetic Brass Name Badge",
+    "category": "office",
+    "price": 399,
+    "description": "Premium jewelers nameplate crafted from solid brass with strong triple-neodymium magnetic backing that protects shirts from pin holes.",
+    "material": "Solid Brass & Neodymium Magnet",
+    "weight": "38 grams",
+    "image": "/products/product-14.jpeg",
+    "inStock": true,
+    "stockCount": 60,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_15",
+    "name": "Republic of India Tiranga Map Gold Lapel Pin",
+    "category": "everyday",
+    "price": 349,
+    "description": "Patriotic India geographic map pin with hand-filled Saffron, White & Green soft enamel, Ashoka Chakra detailing, and polished gold plating.",
+    "material": "Gold-Plated Zinc Alloy",
+    "weight": "18 grams",
+    "image": "/products/product-15.jpeg",
+    "inStock": true,
+    "stockCount": 110,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_16",
+    "name": "Indian National Flag Map Gold Brooch Pin",
+    "category": "everyday",
+    "price": 349,
+    "description": "Elegant contour-cut Indian tricolour lapel brooch with butterfly clutch fastener. Perfect for Independence Day, Republic Day, and national summits.",
+    "material": "High-Grade Enamel & Brass",
+    "weight": "16 grams",
+    "image": "/products/product-16.jpeg",
+    "inStock": true,
+    "stockCount": 95,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_17",
+    "name": "Indian Tricolour National Pride Lapel Pin",
+    "category": "everyday",
+    "price": 349,
+    "description": "High-definition enameled India map silhouette badge with polished gold-gilt bezel and premium anti-rotation spur backing.",
+    "material": "Gold-Gilt Die-Cast Alloy",
+    "weight": "17 grams",
+    "image": "/products/product-17.jpeg",
+    "inStock": true,
+    "stockCount": 120,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_18",
+    "name": "VC Task Force Jai Bharat Gold-Edged Name Tag",
+    "category": "office",
+    "price": 389,
+    "description": "Sleek bevelled rectangular personnel tag with gold electroplated rim, acrylic dome face, and high-visibility UV printing.",
+    "material": "Gold Plated Brass Alloy",
+    "weight": "26 grams",
+    "image": "/products/product-18.jpeg",
+    "inStock": true,
+    "stockCount": 85,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_19",
+    "name": "Corporate & Club Commemorative Medallions Collection",
+    "category": "everyday",
+    "price": 899,
+    "description": "Collection of 6 custom fluted rope-edge commemorative medallions including Coca-Cola, India Club, Scorpio & medical caduceus insignia.",
+    "material": "Dual-Tone Brass & Silver Plating",
+    "weight": "120 grams",
+    "image": "/products/product-19.jpeg",
+    "inStock": true,
+    "stockCount": 25,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_20",
+    "name": "NSS Volunteer Regional Campus Official Metal Badge",
+    "category": "office",
+    "price": 329,
+    "description": "Signature contoured crest badge for National Service Scheme delegates, finished in navy blue baked enamel with silver chrome outline.",
+    "material": "Chrome-Plated Zinc Alloy",
+    "weight": "26 grams",
+    "image": "/products/product-20.jpeg",
+    "inStock": true,
+    "stockCount": 70,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_21",
+    "name": "Women in Rotaract Silhouette Enamel Pin",
+    "category": "everyday",
+    "price": 349,
+    "description": "Modern wide-brim hat silhouette lapel pin honoring Women in Rotaract with deep royal blue enamel and silver-plated rotary gear emblem.",
+    "material": "Silver-Plated Brass & Hard Enamel",
+    "weight": "22 grams",
+    "image": "/products/product-21.jpeg",
+    "inStock": true,
+    "stockCount": 65,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_22",
+    "name": "Prestigious Academic & Maritime Gold Lapel Pin Set",
+    "category": "everyday",
+    "price": 649,
+    "description": "Fluted gold rope-rim lapel pin collection featuring academic crests, nautical compass emblems, and mandala floral relief medallions.",
+    "material": "Gold Plated Brass",
+    "weight": "48 grams",
+    "image": "/products/product-22.jpeg",
+    "inStock": true,
+    "stockCount": 40,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_23",
+    "name": "IndiGo Airlines A320 Aircraft Fleet Lapel Pin",
+    "category": "everyday",
+    "price": 449,
+    "description": "Precision die-cast miniature airliner pin with authentic navy blue IndiGo livery, dual butterfly clutches, and polished nickel finish.",
+    "material": "Nickel-Plated Zinc Alloy",
+    "weight": "24 grams",
+    "image": "/products/product-23.jpeg",
+    "inStock": true,
+    "stockCount": 50,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_24",
+    "name": "Executive Corporate Logo Gold Tie Clip Trio",
+    "category": "office",
+    "price": 699,
+    "description": "Trio of executive spring-loaded tie bars featuring enameled corporate medallions including Bank of Baroda in radiant polished 24K gold finish.",
+    "material": "Spring-Steel & 24K Gold Plate",
+    "weight": "45 grams",
+    "image": "/products/product-24.jpeg",
+    "inStock": true,
+    "stockCount": 35,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_25",
+    "name": "Caza Developers Corporate Identity Metal Pins",
+    "category": "office",
+    "price": 399,
+    "description": "Pair of circular silver and square royal blue real-estate development corporate lapel emblems with gold relief finish.",
+    "material": "Dual-Plated Alloy Steel",
+    "weight": "28 grams",
+    "image": "/products/product-25.jpeg",
+    "inStock": true,
+    "stockCount": 60,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_26",
+    "name": "Heavy-Duty Magnetic Fastener for Badges & Pins",
+    "category": "office",
+    "price": 149,
+    "description": "Ultra-strong neodymium magnetic badge attachment plate with adhesive back. Holds badges securely through suits and jackets without fabric damage.",
+    "material": "Neodymium Rare-Earth Magnet & Steel",
+    "weight": "14 grams",
+    "image": "/products/product-26.jpeg",
+    "inStock": true,
+    "stockCount": 300,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_27",
+    "name": "ICAI Chartered Accountant Member Gold Emblem Pin",
+    "category": "office",
+    "price": 399,
+    "description": "Prestigious circular gold lapel pin for Chartered Accountants with crystal-clear resin dome, gold border, and magnetic attachment.",
+    "material": "Gold Plated Brass & Epoxy Dome",
+    "weight": "22 grams",
+    "image": "/products/product-27.jpeg",
+    "inStock": true,
+    "stockCount": 110,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_28",
+    "name": "BTS Bulletproof Space Whale Gold Enamel Brooch",
+    "category": "everyday",
+    "price": 429,
+    "description": "Collector's edition cosmic whale enamel pin featuring intricate gold line art, starry constellation backdrop, and deep violet accents.",
+    "material": "Gold-Plated Brass & Hard Enamel",
+    "weight": "24 grams",
+    "image": "/products/product-28.jpeg",
+    "inStock": true,
+    "stockCount": 75,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_29",
+    "name": "ICAI Member Lapel Pin with Magnetic Clasp",
+    "category": "office",
+    "price": 399,
+    "description": "Official CA Member insignia pin paired with quick-release magnetic back for hassle-free everyday wear on business suits.",
+    "material": "Gold Plated Brass & Magnet",
+    "weight": "25 grams",
+    "image": "/products/product-29.jpeg",
+    "inStock": true,
+    "stockCount": 90,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_30",
+    "name": "Armed Forces Flag Day Assam Commemorative Badges Set",
+    "category": "everyday",
+    "price": 499,
+    "description": "Official Armed Forces Flag Day Assam commemorative pin collection with tri-service shield insignia and military clutch attachment.",
+    "material": "Die-Cast Brass with Gold Plating",
+    "weight": "60 grams",
+    "image": "/products/product-30.jpeg",
+    "inStock": true,
+    "stockCount": 85,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_31",
+    "name": "Custom Laser-Cut Mirrored Gold Letter K Sign",
+    "category": "office",
+    "price": 899,
+    "description": "Precision laser-cut 3D monogram letter sign in high-gloss mirror gold finish. Ideal for office reception desks, executive walls, and monogram gifting.",
+    "material": "Mirror Gold Acrylic & Metal Composite",
+    "weight": "110 grams",
+    "image": "/products/product-31.jpeg",
+    "inStock": true,
+    "stockCount": 20,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_32",
+    "name": "Jai Tailors Luxury Brushed Brass Name Badge",
+    "category": "office",
+    "price": 499,
+    "description": "Architectural brushed black metal plate with embossed gold lettering and sewing machine motif. Designed for high-end boutique and salon uniforms.",
+    "material": "Brushed Brass & Black Nickel",
+    "weight": "32 grams",
+    "image": "/products/product-32.jpeg",
+    "inStock": true,
+    "stockCount": 45,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_33",
+    "name": "Korero Founders Forum Epoxy Dome Lapel Pin",
+    "category": "office",
+    "price": 349,
+    "description": "Deep navy blue circular founders forum lapel badge with scratch-resistant polyurethane dome and polished gold-gilt bezel.",
+    "material": "Gold-Gilt Zinc Alloy",
+    "weight": "20 grams",
+    "image": "/products/product-33.jpeg",
+    "inStock": true,
+    "stockCount": 100,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_34",
+    "name": "Korero Founders Forum Bulk Event Lapel Pins",
+    "category": "office",
+    "price": 1299,
+    "description": "Bulk executive set of corporate summit pins with precision butterfly clutch fastenings. Ideal for business conventions and VIP networking events.",
+    "material": "Solid Brass & Baked Enamel",
+    "weight": "180 grams",
+    "image": "/products/product-34.jpeg",
+    "inStock": true,
+    "stockCount": 30,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_35",
+    "name": "Korero The Founders Forum Premium Lapel Pin",
+    "category": "office",
+    "price": 349,
+    "description": "Bespoke executive pin with high-gloss domed surface and subtle bronze gold bezel. Worn by founders and keynote conference speakers.",
+    "material": "Die-Cast Alloy & Polyurethane Dome",
+    "weight": "21 grams",
+    "image": "/products/product-35.jpeg",
+    "inStock": true,
+    "stockCount": 80,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_36",
+    "name": "Korero Summit Lapel Pin Multi-Pack with Clutches",
+    "category": "office",
+    "price": 999,
+    "description": "Set of 6 convention badges displaying both obverse dome finish and textured brass reverse with dual butterfly clutches.",
+    "material": "Gold Plated Brass",
+    "weight": "95 grams",
+    "image": "/products/product-36.jpeg",
+    "inStock": true,
+    "stockCount": 40,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_37",
+    "name": "Civil Defence National Service Crest Lapel Pin",
+    "category": "office",
+    "price": 399,
+    "description": "Authentic Civil Defence shield lapel pin featuring the Ashoka Lion Capital, triangle insignia, and crimson red banner.",
+    "material": "Hard Enamel & Polished Brass",
+    "weight": "26 grams",
+    "image": "/products/product-37.jpeg",
+    "inStock": true,
+    "stockCount": 65,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_38",
+    "name": "Regency Cuchillo Executive Chef Member Pin",
+    "category": "office",
+    "price": 349,
+    "description": "Culinary society member lapel badge with chef toque and crossed knives icon in midnight black and polished gold tone.",
+    "material": "Gold-Plated Brass Alloy",
+    "weight": "22 grams",
+    "image": "/products/product-38.jpeg",
+    "inStock": true,
+    "stockCount": 50,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_39",
+    "name": "NIT Rourkela National Institute of Technology Crest Pin",
+    "category": "office",
+    "price": 379,
+    "description": "Official institutional crest pin for NIT Rourkela students, faculty, and alumni. Features gear wheel and engineering torch emblem with magnetic back.",
+    "material": "Die-Cast Zinc Alloy with Enamel",
+    "weight": "28 grams",
+    "image": "/products/product-39.jpeg",
+    "inStock": true,
+    "stockCount": 75,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_40",
+    "name": "Regency Cuchillo Safety Pin Back Badge",
+    "category": "office",
+    "price": 349,
+    "description": "Culinary guild emblem badge fitted with heavy-duty safety pin clasp for secure placement on chef coats and aprons.",
+    "material": "Polished Brass & Black Enamel",
+    "weight": "23 grams",
+    "image": "/products/product-40.jpeg",
+    "inStock": true,
+    "stockCount": 45,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_41",
+    "name": "NIT Rourkela Crest Pin with Gold Clutch Back",
+    "category": "office",
+    "price": 379,
+    "description": "Official collegiate crest badge featuring butterfly clutch fastening and brushed nickel reverse. Essential for graduation and university ceremonies.",
+    "material": "Zinc Alloy with Gold Accent",
+    "weight": "27 grams",
+    "image": "/products/product-41.jpeg",
+    "inStock": true,
+    "stockCount": 80,
+    "gstAvailable": true,
+    "engravable": true
+  },
+  {
+    "id": "mc_prod_42",
+    "name": "AKZKU Industrial Machinery Corporate Crest Pin",
+    "category": "office",
+    "price": 369,
+    "description": "Square corporate identity lapel pin with geometric cyan logo, beveled gold frame, and crystal resin protective overlay.",
+    "material": "Gold-Plated Die-Cast Alloy",
+    "weight": "24 grams",
+    "image": "/products/product-42.jpeg",
+    "inStock": true,
+    "stockCount": 70,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_43",
+    "name": "AKZKU Square Gold-Plated Enamel Badge",
+    "category": "office",
+    "price": 369,
+    "description": "Industrial equipment corporate badge featuring razor-sharp screen printing inside a recessed bevelled gold rim.",
+    "material": "Gold-Plated Brass",
+    "weight": "25 grams",
+    "image": "/products/product-43.jpeg",
+    "inStock": true,
+    "stockCount": 65,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
+    "id": "mc_prod_44",
+    "name": "AKZKU Premium Corporate Metal Lapel Pin",
+    "category": "office",
+    "price": 369,
+    "description": "Corporate pin badge designed for trade show delegations and industrial manufacturing representatives.",
+    "material": "Gold Plated Zinc Alloy",
+    "weight": "24 grams",
+    "image": "/products/product-44.jpeg",
+    "inStock": true,
+    "stockCount": 80,
+    "gstAvailable": true,
+    "engravable": false
+  },
+  {
     "id": "prod_01KPGRDE4E49VHWAB76VWV35C2",
     "name": "Metal Keychain with Custom Print",
     "category": "everyday",
@@ -5152,7 +5768,7 @@ function getProductCategory(product: Product): { id: string; name: string; badge
   if (nameLower.includes('card holder') || nameLower.includes('paper weight') || nameLower.includes('paperweight') || nameLower.includes('desk') || nameLower.includes('tray') || nameLower.includes('organizer') || descLower.includes('holder') || product.category === 'office') {
     return { id: 'office', name: 'Executive Desk & Office', badge: 'Executive Desk', icon: '💼' };
   }
-  if (nameLower.includes('hook') || nameLower.includes('frame') || nameLower.includes('badge') || nameLower.includes('trophy') || nameLower.includes('wall') || nameLower.includes('plated') || nameLower.includes('gold')) {
+  if (nameLower.includes('hook') || nameLower.includes('frame') || nameLower.includes('badge') || nameLower.includes('trophy') || nameLower.includes('wall') || nameLower.includes('plated') || nameLower.includes('gold') || nameLower.includes('pin') || nameLower.includes('medal') || nameLower.includes('medallion') || nameLower.includes('tie clip') || nameLower.includes('emblem') || nameLower.includes('sign')) {
     return { id: 'gifts', name: 'Corporate Gifts & Awards', badge: 'Gifts & Awards', icon: '🏆' };
   }
 
@@ -5178,6 +5794,7 @@ function App() {
   const [catalogCategory, setCatalogCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
+  const [showAllHomeProducts, setShowAllHomeProducts] = useState<boolean>(false);
   
   // Mobile Nav Drawer State
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
@@ -6028,9 +6645,9 @@ Client Details:
                 </div>
               </ScrollReveal>
 
-              {/* 2-Row 4-Column Products Grid (8 products) */}
+              {/* 2-Row 4-Column Products Grid (8 products initially, expandable to all 44 new products) */}
               <div className="mc-grid-showcase-2rows">
-                {PRODUCTS.slice(0, 8).map((product, idx) => {
+                {PRODUCTS.slice(0, showAllHomeProducts ? 44 : 8).map((product, idx) => {
                   const catInfo = getProductCategory(product);
                   const tagBadge = catInfo.badge;
                   const ratingScore = (4.8 + (idx % 3) * 0.1).toFixed(1);
@@ -6082,7 +6699,15 @@ Client Details:
               </div>
 
               {/* Button Underneath Products Grid */}
-              <div style={{ textAlign: 'center', marginTop: '40px' }}>
+              <div style={{ textAlign: 'center', marginTop: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                <button 
+                  className="nx-btn-outline"
+                  style={{ padding: '14px 28px', fontSize: '15px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', borderColor: '#0891b2', color: '#0891b2', fontWeight: 600 }}
+                  onClick={() => setShowAllHomeProducts(!showAllHomeProducts)}
+                >
+                  <span>{showAllHomeProducts ? 'Show Top 8 Featured' : 'View All 44 Products in This Section'}</span>
+                </button>
+
                 <button 
                   className="nx-btn-primary"
                   style={{ padding: '14px 36px', fontSize: '15px', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}
